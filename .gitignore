@@ -1,0 +1,4 @@
+todo-api/node_modules
+todo-react/node_modules
+todo-react/.env
+todo-api/.env

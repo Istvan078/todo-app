@@ -1,0 +1,11 @@
+POST http://localhost:3001/tasks/create
+Content-Type: application/json
+
+// REQUEST BODY
+{
+    "title": "Proba 1234567",
+    "description": "Test description",
+    "status": "todo",
+    "priority": "normal",
+    "dueDate": "2025-01-05T12:00:00Z"
+}
