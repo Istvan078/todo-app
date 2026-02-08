@@ -19,7 +19,7 @@ const port = process.env.PORT;
 
 const corsOptions: CorsOptions = {
   // use my hosting url
-  origin: ['http://localhost:5173'],
+  origin: ['https://todo-ksrn.onrender.com'],
   methods: [
     'GET',
     'POST',
