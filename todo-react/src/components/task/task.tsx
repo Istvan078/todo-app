@@ -68,14 +68,17 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
 
   function handleTaskDeleted() {
     if (_id)
-      mutateDelete(_id, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["fetchTasks"],
-            refetchType: "all",
-          });
+      mutateDelete(
+        { _id: _id },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["fetchTasks"],
+              refetchType: "all",
+            });
+          },
         },
-      });
+      );
   }
 
   return (

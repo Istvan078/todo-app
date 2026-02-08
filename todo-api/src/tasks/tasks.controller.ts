@@ -77,7 +77,7 @@ export class TasksController {
   ): Promise<any> {
     const validatedData: { _id: string } = matchedData(req);
     try {
-      await this.deleteTaskProvider.deleteTask(
+      return await this.deleteTaskProvider.deleteTask(
         validatedData._id,
       );
     } catch (err: any) {

@@ -1,12 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 
-const deleteTask = async (_id: string) => {
+const deleteTask = async (_id: { _id: string }) => {
   const response = await fetch(`${import.meta.env.VITE_API_URL}tasks/delete`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(_id),
+    body: JSON.stringify({ _id }),
   });
   if (!response.ok) {
     throw new Error("Network response not OK");

@@ -10,7 +10,7 @@ export class DeleteTaskProvider {
 
   public async deleteTask(_id: string) {
     try {
-      this.tasksService.deleteTask(_id);
+      return await this.tasksService.deleteTask(_id);
     } catch (err: any) {
       throw new Error(err);
     }
