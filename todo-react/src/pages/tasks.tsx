@@ -19,7 +19,7 @@ function todaysDate() {
 
 // Function component, returns reactelement
 export const Tasks: FC = (): ReactElement => {
-  const { data, isSuccess, isError } = useFetchTasks({});
+  const { data } = useFetchTasks({});
   return (
     <section className="flex flex-row w-full p-4 gap-8">
       <section className="flex basis-2/3 justify-center">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import {
@@ -35,7 +35,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const CreateTaskForm = () => {
-  const [date, setDate] = useState<Date>();
+  // const [date, setDate] = useState<Date>();
   const form = useForm<z.infer<typeof CreateTaskSchema>>({
     resolver: zodResolver(CreateTaskSchema),
     defaultValues: {
@@ -44,7 +44,7 @@ export const CreateTaskForm = () => {
     },
   });
 
-  const { mutate, isSuccess, isError, isPending } = useCreateTask();
+  const { mutate, isSuccess } = useCreateTask();
   const queryClient = useQueryClient();
 
   function onSubmit(values: z.infer<typeof CreateTaskSchema>) {

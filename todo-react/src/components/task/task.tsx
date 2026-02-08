@@ -17,7 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export const Task: FC<ITask> = (props: ITask): ReactElement => {
   const { title, description, dueDate, priority, status, _id } = props;
   const [progress, setProgress] = useState(false);
-  const { mutate, isSuccess } = useUpdateTask();
+  const { mutate } = useUpdateTask();
   const queryClient = useQueryClient();
 
   const formattedDate = new Date(dueDate).toLocaleDateString("en-GB", {
