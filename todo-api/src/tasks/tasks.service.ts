@@ -48,7 +48,7 @@ export class TasksService {
   }
 
   public deleteTask(_id: string) {
-    this.taskModel.deleteOne({
+    return this.taskModel.deleteOne({
       _id: _id,
     });
   }

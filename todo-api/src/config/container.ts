@@ -5,6 +5,7 @@ import { UserController } from '../user/user.controller';
 import { TasksService } from '../tasks/tasks.service';
 import { UpdateTaskProvider } from '../tasks/providers/updateTask.provider';
 import { GetTasksProvider } from '../tasks/providers/getTasks.provider';
+import { DeleteTaskProvider } from '../tasks/providers/deleteTask.provider';
 
 export const container: Container = new Container();
 
@@ -17,6 +18,10 @@ container
   .inTransientScope();
 container
   .bind(UpdateTaskProvider)
+  .toSelf()
+  .inTransientScope();
+container
+  .bind(DeleteTaskProvider)
   .toSelf()
   .inTransientScope();
 container.bind(UserController).toSelf().inTransientScope();
