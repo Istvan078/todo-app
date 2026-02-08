@@ -34,11 +34,18 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
 
   function handleProgressChange(value: boolean) {
     setProgress(value);
-    if (_id) mutate({ _id: _id, status: value ? "inProgress" : "todo" });
-    queryClient.invalidateQueries({
-      queryKey: ["fetchTasks"],
-      refetchType: "all",
-    });
+    if (_id)
+      mutate(
+        { _id: _id, status: value ? "inProgress" : "todo" },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["fetchTasks"],
+              refetchType: "all",
+            });
+          },
+        },
+      );
   }
 
   function handleTaskCompleted() {
@@ -57,10 +64,12 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
   }
 
   return (
-    <Card className="w-full mb-8">
-      <CardHeader className="flex flex-row justify-between">
-        <CardTitle className="basis-2/3 leading-8">{title}</CardTitle>
-        <div className="flex">
+    <Card className="w-full mb-8 py-2 sm:py-6">
+      <CardHeader className="grid grid-cols-4 grid-rows-2 gap-y-5 sm:flex sm:flex-row sm:justify-between px-3">
+        <CardTitle className="row-start-2 row-end-3 col-span-full sm:basis-2/3 sm:leading-8">
+          {title}
+        </CardTitle>
+        <div className="flex col-start-4 col-end-5 justify-self-end">
           <Badge className="mr-2" variant="outline">
             {formattedDate}
           </Badge>
@@ -81,10 +90,10 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
           )}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3">
         <p>{description}</p>
       </CardContent>
-      <CardFooter className="flex flex-row justify-between">
+      <CardFooter className="flex flex-row justify-between px-3">
         <div className="flex flex-row items-center">
           <Switch
             id="in-progress"

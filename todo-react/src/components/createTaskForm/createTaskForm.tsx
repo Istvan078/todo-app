@@ -34,7 +34,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
-export const CreateTaskForm = () => {
+export const CreateTaskForm = ({ onCreated }: { onCreated: () => void }) => {
   // const [date, setDate] = useState<Date>();
   const form = useForm<z.infer<typeof CreateTaskSchema>>({
     resolver: zodResolver(CreateTaskSchema),
@@ -57,6 +57,7 @@ export const CreateTaskForm = () => {
             queryKey: ["fetchTasks"],
             refetchType: "all",
           });
+          onCreated();
         },
       },
     );

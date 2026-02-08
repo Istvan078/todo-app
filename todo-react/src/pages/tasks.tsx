@@ -1,9 +1,11 @@
 import type { FC, ReactElement } from "react";
+import { useState } from "react";
 import { TasksCounter } from "@/components/tasksCounter/tasksCounter";
 import { Task } from "@/components/task/task";
 import { TaskSidebar } from "@/components/taskSidebar/taskSidebar";
 import { useFetchTasks } from "@/hooks/useFetchTasks.hook";
 import type { ITask } from "@/types/task.interface";
+import { Button } from "@/components/ui/button";
 
 function todaysDate() {
   const today = new Date();
@@ -20,14 +22,20 @@ function todaysDate() {
 // Function component, returns reactelement
 export const Tasks: FC = (): ReactElement => {
   const { data } = useFetchTasks({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  function showTaskSidebar() {
+    setIsSidebarOpen(true);
+  }
+
   return (
-    <section className="flex flex-row w-full p-4 gap-8">
-      <section className="flex basis-2/3 justify-center">
-        <div className="flex flex-col w-4/5 p-4">
+    <section className="sm:flex sm:flex-row w-full p-1 sm:p-4 gap-8 grid">
+      <section className="sm:flex sm:basis-2/3 justify-center">
+        <div className="flex flex-col sm:w-4/5 p-4">
           <h1 className="text-white font-bold text-2xl mb-8">
             {`Task as on: ${todaysDate()}`}
           </h1>
-          <div className="flex justify-around mb-12">
+          <div className="flex justify-around mb-5 sm:mb-12">
             <TasksCounter
               status="todo"
               count={
@@ -53,6 +61,9 @@ export const Tasks: FC = (): ReactElement => {
               }
             ></TasksCounter>
           </div>
+          <div className="mb-2">
+            <Button onClick={showTaskSidebar}>New Task</Button>
+          </div>
           {data &&
             Array.isArray(data.data) &&
             data.data.every(
@@ -76,8 +87,10 @@ export const Tasks: FC = (): ReactElement => {
             ))}
         </div>
       </section>
-      <section className="flex basis-1/3">
-        <TaskSidebar></TaskSidebar>
+      <section className="sm:flex sm:basis-1/3">
+        {isSidebarOpen && (
+          <TaskSidebar onClose={() => setIsSidebarOpen(false)}></TaskSidebar>
+        )}
       </section>
     </section>
   );
