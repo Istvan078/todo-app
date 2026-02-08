@@ -46,4 +46,10 @@ export class TasksService {
   public async countDocuments(filter?: QueryFilter<ITask>) {
     return await this.taskModel.countDocuments(filter);
   }
+
+  public deleteTask(_id: string) {
+    this.taskModel.deleteOne({
+      _id: _id,
+    });
+  }
 }

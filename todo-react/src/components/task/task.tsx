@@ -13,11 +13,14 @@ import { Button } from "@/components/ui/button";
 import type { ITask } from "@/types/task.interface";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 import { useQueryClient } from "@tanstack/react-query";
+import { X } from "lucide-react";
+import { useDeleteTask } from "@/hooks/useDeleteTask.hook";
 
 export const Task: FC<ITask> = (props: ITask): ReactElement => {
   const { title, description, dueDate, priority, status, _id } = props;
   const [progress, setProgress] = useState(false);
   const { mutate } = useUpdateTask();
+  const { mutate: mutateDelete } = useDeleteTask();
   const queryClient = useQueryClient();
 
   const formattedDate = new Date(dueDate).toLocaleDateString("en-GB", {
@@ -63,9 +66,25 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
       );
   }
 
+  function handleTaskDeleted() {
+    if (_id)
+      mutateDelete(_id, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["fetchTasks"],
+            refetchType: "all",
+          });
+        },
+      });
+  }
+
   return (
     <Card className="w-full mb-8 py-2 sm:py-6">
       <CardHeader className="grid grid-cols-4 grid-rows-2 gap-y-5 sm:flex sm:flex-row sm:justify-between px-3">
+        <X
+          onClick={handleTaskDeleted}
+          className="col-start-1 col-end-2 self-center h-4 w-4"
+        />
         <CardTitle className="row-start-2 row-end-3 col-span-full sm:basis-2/3 sm:leading-8">
           {title}
         </CardTitle>

@@ -10,6 +10,7 @@ import { validationResult } from 'express-validator';
 import { getTasksValidator } from './validators/getTasks.validator';
 import { StatusCodes } from 'http-status-codes';
 import { updateTaskValidator } from './validators/updateTask.validator';
+import { deleteTaskValidator } from './validators/deleteTask.validator';
 
 @injectable()
 export class TasksRouter {
@@ -84,6 +85,29 @@ export class TasksRouter {
               res,
             );
           res.status(StatusCodes.OK).json(updatedTask);
+        } else {
+          res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(result.array());
+        }
+      },
+    );
+
+    this.router.delete(
+      '/delete',
+      deleteTaskValidator,
+      async (
+        req: Request<{}, {}, { _id: string }>,
+        res: Response,
+      ) => {
+        const result = validationResult(req);
+        if (result.isEmpty()) {
+          const deletedTask =
+            await this.tasksController.handleDeleteTasks(
+              req,
+              res,
+            );
+          res.status(StatusCodes.OK).json(deletedTask);
         } else {
           res
             .status(StatusCodes.BAD_REQUEST)

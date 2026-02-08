@@ -11,6 +11,7 @@ import { UpdateTaskProvider } from './providers/updateTask.provider';
 import { matchedData } from 'express-validator';
 import { ITaskPagination } from './interfaces/taskPagination.interface';
 import { GetTasksProvider } from './providers/getTasks.provider';
+import { DeleteTaskProvider } from './providers/deleteTask.provider';
 
 @injectable()
 export class TasksController {
@@ -19,10 +20,12 @@ export class TasksController {
     // private userController: UserController,
     @inject(TasksService)
     private tasksService: TasksService,
-    @inject(UpdateTaskProvider)
-    private updateTaskProvider: UpdateTaskProvider,
     @inject(GetTasksProvider)
     private getTasksProvider: GetTasksProvider,
+    @inject(UpdateTaskProvider)
+    private updateTaskProvider: UpdateTaskProvider,
+    @inject(DeleteTaskProvider)
+    private deleteTaskProvider: DeleteTaskProvider,
   ) {}
 
   public async handleGetTasks(req: Request, res: Response) {
@@ -62,6 +65,20 @@ export class TasksController {
     try {
       return await this.updateTaskProvider.updateTask(
         validatedData,
+      );
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+
+  public async handleDeleteTasks(
+    req: Request<{}, {}, { _id: string }>,
+    res: Response,
+  ): Promise<any> {
+    const validatedData: { _id: string } = matchedData(req);
+    try {
+      await this.deleteTaskProvider.deleteTask(
+        validatedData._id,
       );
     } catch (err: any) {
       throw new Error(err);
