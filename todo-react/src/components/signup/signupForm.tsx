@@ -12,7 +12,7 @@ import { type ReactElement } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateUser } from "@/hooks/useCreateUser.hook";
 import { CreateUserSchema } from "@/schemas/createUser.schema";
@@ -145,7 +145,7 @@ export function SignupForm(): ReactElement {
                   Login with Google
                 </Button> */}
                 <FieldDescription className="text-center">
-                  Already have an account? <a href="/login">Login</a>
+                  Already have an account? <Link to="/login">Login</Link>
                 </FieldDescription>
               </Field>
             </form>

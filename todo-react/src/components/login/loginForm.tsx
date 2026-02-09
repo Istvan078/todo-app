@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import type z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useLoginUser } from "@/hooks/useLoginUser.hook";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export function LoginForm(): ReactElement {
   const navigate = useNavigate();
@@ -121,7 +121,7 @@ export function LoginForm(): ReactElement {
                   Login with Google
                 </Button> */}
                 <FieldDescription className="text-center">
-                  Don't have an account? <a href="/signup">Sign up</a>
+                  Don't have an account? <Link to="/signup">Sign up</Link>
                 </FieldDescription>
               </Field>
             </form>
