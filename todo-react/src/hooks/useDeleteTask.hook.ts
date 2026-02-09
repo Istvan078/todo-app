@@ -6,7 +6,7 @@ const deleteTask = async (_id: { _id: string }) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ _id }),
+    body: JSON.stringify(_id),
   });
   if (!response.ok) {
     throw new Error("Network response not OK");
