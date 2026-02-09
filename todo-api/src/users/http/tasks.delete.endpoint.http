@@ -1,0 +1,6 @@
+DELETE https://todo-app-jz2g.onrender.com/tasks/delete
+Content-Type: application/json
+
+{
+    "_id": "69824461bccf4df34ac045f5"
+}

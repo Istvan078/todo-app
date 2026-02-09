@@ -1,0 +1,8 @@
+POST http://localhost:3001/users/login
+Content-Type: application/json
+
+// REQUEST BODY
+{
+    "email": "john.doeee@example.com",
+    "password": "123456"
+}

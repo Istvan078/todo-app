@@ -4,6 +4,7 @@ import type { FC, ReactElement } from "react";
 
 export const UserProfile: FC<{ firstName: string }> = (props): ReactElement => {
   const { firstName = "John" } = props;
+
   return (
     <div className="flex flex-col w-full items-center pt-4">
       <Avatar className={`mb-4 ${cn("h-20", "w-20")}`}>
@@ -13,7 +14,7 @@ export const UserProfile: FC<{ firstName: string }> = (props): ReactElement => {
           {firstName.slice(0, 1)}
         </AvatarFallback>
       </Avatar>
-      <h4>Hello, {firstName}</h4>
+      <h4>Hello, user</h4>
     </div>
   );
 };

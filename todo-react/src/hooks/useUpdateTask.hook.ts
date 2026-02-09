@@ -1,12 +1,12 @@
+import { setHeaders } from "@/headers/auth.header";
 import type { IUpdateTask } from "@/types/updateTask.interface";
 import { useMutation } from "@tanstack/react-query";
 
 const updateTask = async (task: IUpdateTask) => {
+  const headers = setHeaders();
   const response = await fetch(`${import.meta.env.VITE_API_URL}tasks/update`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: headers,
     body: JSON.stringify(task),
   });
   if (!response.ok) {

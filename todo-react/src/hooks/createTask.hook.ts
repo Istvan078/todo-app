@@ -1,13 +1,13 @@
+import { setHeaders } from "@/headers/auth.header";
 import type { IResponse } from "@/types/response.interface";
 import type { ITask } from "@/types/task.interface";
 import { useMutation } from "@tanstack/react-query";
 
 const createTask = async (task: ITask) => {
+  const headers = setHeaders();
   const response = await fetch(`${import.meta.env.VITE_API_URL}tasks/create`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: headers,
     body: JSON.stringify(task),
   });
   if (!response.ok) {

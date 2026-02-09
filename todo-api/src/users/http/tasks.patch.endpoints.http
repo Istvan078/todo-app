@@ -1,0 +1,8 @@
+PATCH http://localhost:3001/tasks/update
+Content-Type: application/json
+
+// REQUEST BODY
+{
+    "_id": "69824461bccf4df34ac045f5",
+    "title": "New Title67"
+}

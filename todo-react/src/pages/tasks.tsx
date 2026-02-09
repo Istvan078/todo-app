@@ -1,11 +1,12 @@
 import type { FC, ReactElement } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TasksCounter } from "@/components/tasksCounter/tasksCounter";
 import { Task } from "@/components/task/task";
 import { TaskSidebar } from "@/components/taskSidebar/taskSidebar";
 import { useFetchTasks } from "@/hooks/useFetchTasks.hook";
 import type { ITask } from "@/types/task.interface";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 function todaysDate() {
   const today = new Date();
@@ -26,6 +27,22 @@ export const Tasks: FC = (): ReactElement => {
   const [editTaskData, setEditTaskData] = useState<ITask | undefined>(
     undefined,
   );
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const autoLoginToken = localStorage.getItem("token");
+    if (!autoLoginToken) navigate("/login", { replace: true });
+    if (autoLoginToken) {
+      const token = JSON.parse(autoLoginToken);
+      if (token.tokenExp > new Date().getTime()) {
+        navigate("/", { replace: true });
+      } else {
+        localStorage.removeItem("token");
+        console.log("Token expired, please login again");
+      }
+    }
+  }, [navigate]);
 
   // EDIT TASK
   function openEditTask(task: ITask) {

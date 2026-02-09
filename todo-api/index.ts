@@ -53,9 +53,8 @@ const boostrap = async () => {
     await mongoose.connect(process.env.DATABASE_URL, {
       dbName: process.env.DATABASE_NAME,
     });
-    console.log(`connected to mongoDB`);
     app.listen(port, () => {
-      console.log('SERVER RUNNING ON PORT' + port);
+      console.log('SERVER RUNNING');
     });
   } catch (err) {
     console.log(err);
