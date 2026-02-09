@@ -23,7 +23,9 @@ function todaysDate() {
 export const Tasks: FC = (): ReactElement => {
   const { data } = useFetchTasks({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [editTaskData, setEditTaskData] = useState<ITask | null>(null);
+  const [editTaskData, setEditTaskData] = useState<ITask | undefined>(
+    undefined,
+  );
 
   // EDIT TASK
   function openEditTask(task: ITask) {
@@ -32,7 +34,7 @@ export const Tasks: FC = (): ReactElement => {
   }
 
   function showTaskSidebar() {
-    setEditTaskData(null);
+    setEditTaskData(undefined);
     setIsSidebarOpen(true);
   }
 
