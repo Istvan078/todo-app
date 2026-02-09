@@ -33,9 +33,16 @@ import { useCreateTask } from "@/hooks/createTask.hook";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import type { ITask } from "@/types/task.interface";
+import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 
-export const CreateTaskForm = ({ onCreated }: { onCreated: () => void }) => {
-  // const [date, setDate] = useState<Date>();
+export const CreateTaskForm = ({
+  onCreated,
+  editTaskData,
+}: {
+  onCreated: () => void;
+  editTaskData?: ITask;
+}) => {
   const form = useForm<z.infer<typeof CreateTaskSchema>>({
     resolver: zodResolver(CreateTaskSchema),
     defaultValues: {
@@ -44,35 +51,55 @@ export const CreateTaskForm = ({ onCreated }: { onCreated: () => void }) => {
     },
   });
 
-  const { mutate, isSuccess } = useCreateTask();
+  const { mutate: updateTask, isSuccess: isUpdateSuccess } = useUpdateTask();
+  const { mutate: createTask, isSuccess: isCreateSuccess } = useCreateTask();
   const queryClient = useQueryClient();
 
   function onSubmit(values: z.infer<typeof CreateTaskSchema>) {
     const dueDate = values.dueDate.toISOString();
-    mutate(
-      { ...values, dueDate },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["fetchTasks"],
-            refetchType: "all",
-          });
-          onCreated();
-        },
+
+    const commonOptions = {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchTasks"],
+          refetchType: "all",
+        });
+        onCreated();
       },
-    );
+    };
+
+    if (editTaskData?._id) {
+      updateTask({ ...values, dueDate, _id: editTaskData._id }, commonOptions);
+    } else {
+      createTask({ ...values, dueDate }, commonOptions);
+    }
   }
 
   useEffect(() => {
-    if (isSuccess) {
+    console.log("Edit task data in form:", editTaskData);
+    if (editTaskData) {
+      form.reset({
+        title: editTaskData.title,
+        description: editTaskData.description,
+        dueDate: new Date(editTaskData.dueDate),
+        priority: editTaskData.priority,
+        status: editTaskData.status,
+      });
+    }
+    if (!isUpdateSuccess && !isCreateSuccess) return;
+    if (isCreateSuccess) {
       toast("New Task Created");
+    } else if (isUpdateSuccess) {
+      toast("Task Updated");
     }
     form.reset();
-  }, [isSuccess]);
+  }, [isUpdateSuccess, isCreateSuccess, editTaskData, form]);
 
   return (
     <div>
-      <h2 className="text-xl mb-4">Create a new task</h2>
+      <h2 className="text-xl mb-4">
+        {editTaskData ? "Edit Task" : "Create a new task"}
+      </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="py-2">
@@ -104,6 +131,7 @@ export const CreateTaskForm = ({ onCreated }: { onCreated: () => void }) => {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      key={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -133,6 +161,7 @@ export const CreateTaskForm = ({ onCreated }: { onCreated: () => void }) => {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      key={field.value} // Force re-render when value changes
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -210,7 +239,9 @@ export const CreateTaskForm = ({ onCreated }: { onCreated: () => void }) => {
             ></FormField>
           </div>
           <div className="py-2 flex justify-end">
-            <Button type="submit">Create Task</Button>
+            <Button type="submit">
+              {editTaskData ? "Update Task" : "Create Task"}
+            </Button>
           </div>
         </form>
       </Form>

@@ -23,8 +23,16 @@ function todaysDate() {
 export const Tasks: FC = (): ReactElement => {
   const { data } = useFetchTasks({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [editTaskData, setEditTaskData] = useState<ITask | null>(null);
+
+  // EDIT TASK
+  function openEditTask(task: ITask) {
+    setEditTaskData(task); //
+    setIsSidebarOpen(true);
+  }
 
   function showTaskSidebar() {
+    setEditTaskData(null);
     setIsSidebarOpen(true);
   }
 
@@ -83,13 +91,17 @@ export const Tasks: FC = (): ReactElement => {
                 status={task.status}
                 priority={task.priority}
                 dueDate={task.dueDate}
+                onEdit={() => openEditTask(task)}
               ></Task>
             ))}
         </div>
       </section>
       <section className="sm:flex sm:basis-1/3">
         {isSidebarOpen && (
-          <TaskSidebar onClose={() => setIsSidebarOpen(false)}></TaskSidebar>
+          <TaskSidebar
+            onClose={() => setIsSidebarOpen(false)}
+            editTaskData={editTaskData}
+          ></TaskSidebar>
         )}
       </section>
     </section>

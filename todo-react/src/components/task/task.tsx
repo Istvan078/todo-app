@@ -13,11 +13,14 @@ import { Button } from "@/components/ui/button";
 import type { ITask } from "@/types/task.interface";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 import { useQueryClient } from "@tanstack/react-query";
-import { X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 import { useDeleteTask } from "@/hooks/useDeleteTask.hook";
 
-export const Task: FC<ITask> = (props: ITask): ReactElement => {
+export const Task: FC<ITask & { onEdit: () => void }> = (
+  props: ITask & { onEdit: () => void },
+): ReactElement => {
   const { title, description, dueDate, priority, status, _id } = props;
+  const { onEdit } = props;
   const [progress, setProgress] = useState(false);
   const { mutate } = useUpdateTask();
   const { mutate: mutateDelete } = useDeleteTask();
@@ -88,9 +91,17 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
           onClick={handleTaskDeleted}
           className="col-start-1 col-end-2 self-center h-4 w-4"
         />
-        <CardTitle className="row-start-2 row-end-3 col-span-full sm:basis-2/3 sm:leading-8">
+        <CardTitle className="row-start-2 row-end-3 col-start-1 col-end-4 sm:basis-2/3 sm:leading-8 self-center">
           {title}
         </CardTitle>
+        <Button
+          onClick={onEdit}
+          size="sm"
+          className="row-start-2 row-end-3 col-start-4 col-end-5 self-center justify-self-end bg-orange-300 hover:bg-orange-400"
+        >
+          Edit
+          <Pencil className="h-4 w-4"></Pencil>
+        </Button>
         <div className="flex col-start-4 col-end-5 justify-self-end">
           <Badge className="mr-2" variant="outline">
             {formattedDate}
