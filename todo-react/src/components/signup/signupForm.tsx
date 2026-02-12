@@ -12,15 +12,15 @@ import { type ReactElement } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateUser } from "@/hooks/useCreateUser.hook";
 import { CreateUserSchema } from "@/schemas/createUser.schema";
 
-export function SignupForm(): ReactElement {
-  const navigate = useNavigate();
-  const { mutate } = useCreateUser();
-
+export function SignupForm({
+  onSubmit,
+}: {
+  onSubmit: (values: z.infer<typeof CreateUserSchema>) => void;
+}): ReactElement {
   const form = useForm<z.infer<typeof CreateUserSchema>>({
     resolver: zodResolver(CreateUserSchema),
     defaultValues: {
@@ -31,22 +31,6 @@ export function SignupForm(): ReactElement {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof CreateUserSchema>) => {
-    mutate(
-      { ...values },
-      {
-        onSuccess: (data) => {
-          console.log("Signup successful:", data.data.token);
-          const token = {
-            token: data.data.token,
-            tokenExp: data.data.tokenExp,
-          };
-          localStorage.setItem("token", JSON.stringify(token));
-          navigate("/");
-        },
-      },
-    );
-  };
   return (
     <div className="flex flex-col gap-6 h-screen items-center justify-center">
       <Card className="w-full sm:w-md">

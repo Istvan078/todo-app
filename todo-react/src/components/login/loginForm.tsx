@@ -14,10 +14,14 @@ import { useEffect, type ReactElement } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { useLoginUser } from "@/hooks/useLoginUser.hook";
 import { Link, useNavigate } from "react-router";
 
-export function LoginForm(): ReactElement {
+type Props = {
+  onSubmit: (values: any) => void;
+  isLoading: boolean;
+};
+
+export function LoginForm({ onSubmit, isLoading }: Props): ReactElement {
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof LoginUserSchema>>({
@@ -27,8 +31,6 @@ export function LoginForm(): ReactElement {
       password: "",
     },
   });
-
-  const { mutate } = useLoginUser();
 
   useEffect(() => {
     const autoLoginToken = localStorage.getItem("token");
@@ -44,22 +46,6 @@ export function LoginForm(): ReactElement {
     }
   }, [navigate]);
 
-  const onSubmit = (values: z.infer<typeof LoginUserSchema>) => {
-    mutate(
-      { ...values },
-      {
-        onSuccess: (data) => {
-          console.log("Login successful:", data.data.token);
-          const token = {
-            token: data.data.token,
-            tokenExp: data.data.tokenExp,
-          };
-          localStorage.setItem("token", JSON.stringify(token));
-          navigate("/");
-        },
-      },
-    );
-  };
   return (
     <div className="flex flex-col gap-6 h-screen items-center justify-center">
       <Card className="w-full sm:w-md">

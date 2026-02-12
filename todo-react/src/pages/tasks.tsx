@@ -7,6 +7,7 @@ import { useFetchTasks } from "@/hooks/useFetchTasks.hook";
 import type { ITask } from "@/types/task.interface";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
+import { LogOut } from "lucide-react";
 
 function todaysDate() {
   const today = new Date();
@@ -55,6 +56,11 @@ export const Tasks: FC = (): ReactElement => {
     setIsSidebarOpen(true);
   }
 
+  function logout() {
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  }
+
   return (
     <section className="sm:flex sm:flex-row w-full p-1 sm:p-4 gap-8 grid">
       <section className="sm:flex sm:basis-2/3 justify-center">
@@ -88,8 +94,12 @@ export const Tasks: FC = (): ReactElement => {
               }
             ></TasksCounter>
           </div>
-          <div className="mb-2">
+          <div className="mb-2 flex justify-between gap-4">
             <Button onClick={showTaskSidebar}>New Task</Button>
+            <button onClick={logout} className="flex items-center gap-2">
+              <LogOut className="h-4 w-4" />
+              Logout
+            </button>
           </div>
           {data &&
             Array.isArray(data.data) &&
