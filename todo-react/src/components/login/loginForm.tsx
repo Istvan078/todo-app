@@ -21,7 +21,7 @@ type Props = {
   isLoading: boolean;
 };
 
-export function LoginForm({ onSubmit, isLoading }: Props): ReactElement {
+export function LoginForm({ onSubmit }: Props): ReactElement {
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof LoginUserSchema>>({
