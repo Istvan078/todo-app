@@ -2,7 +2,6 @@ import type { FC, ReactElement } from "react";
 import { Card } from "@/components/ui/card";
 import { UserProfile } from "../userProfile/userProfile";
 import { CreateTaskForm } from "../createTaskForm/createTaskForm";
-import { Logout } from "../logout/logout";
 import type { ITask } from "@/types/task.interface";
 import { Button } from "../ui/button";
 
