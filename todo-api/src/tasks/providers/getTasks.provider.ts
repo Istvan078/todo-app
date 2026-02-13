@@ -49,13 +49,19 @@ export class GetTasksProvider {
   //   };
   // }
 
-  // NEW VERSION WITH USER ID - PAGINATION TO BE IMPLEMENTED IN THE FUTURE, FOR NOW WE RETURN ALL TASKS OF THE USER
+  // NEW VERSION WITH USER ID - PAGINATION TO BE IMPLEMENTED IN THE FUTURE, FOR NOW WE RETURN ALL TASKS OF THE USER IN ASCENDING ORDER BASED ON DUE DATE
   public async findAllTasksByUserId(
-    pagination: Partial<ITaskPagination>,
+    pagination: Partial<ITaskPagination> = { order: 'asc' },
     userId: Schema.Types.ObjectId,
   ): Promise<{ data: ITask[]; meta: {} }> {
-    const tasks: ITask[] =
-      await this.tasksService.findAllTasksByUserId(userId);
+    const tasks: ITask[] = (
+      await this.tasksService.findAllTasksByUserId(userId)
+    ).sort((a, b) =>
+      pagination.order === 'asc'
+        ? b.dueDate.getTime() - a.dueDate.getTime()
+        : a.dueDate.getTime() - b.dueDate.getTime(),
+    );
+
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter(
       (t) => t.status === 'completed',

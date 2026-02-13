@@ -212,7 +212,12 @@ export const CreateTaskForm = ({
                         selected={field.value}
                         onSelect={field.onChange}
                         initialFocus
-                        disabled={(date) => date < new Date()}
+                        disabled={(date) =>
+                          date <
+                          new Date(
+                            new Date().getTime() - 1 * 24 * 60 * 60 * 1000,
+                          )
+                        } // Disable past dates
                       />
                     </PopoverContent>
                   </Popover>
