@@ -37,6 +37,12 @@ const taskSchema: Schema<ITask> = new Schema(
       type: Date,
       required: true,
     },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
   },
   // SCHEMA OPTIONS OBJECT
   {

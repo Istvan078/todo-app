@@ -4,7 +4,7 @@ import {
   IPartialTaskWithId,
   ITask,
 } from './task.interface';
-import { Document } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 // import { UserController } from '../user/user.controller';
 import { TasksService } from './tasks.service';
 import { UpdateTaskProvider } from './providers/updateTask.provider';
@@ -31,10 +31,13 @@ export class TasksController {
   public async handleGetTasks(req: Request, res: Response) {
     const validatedData: Partial<ITaskPagination> =
       matchedData(req);
+    const userId = (req as any).user
+      ?._id as Schema.Types.ObjectId;
     try {
       const tasks: { data: ITask[]; meta: {} } =
-        await this.getTasksProvider.findAllTasks(
+        await this.getTasksProvider.findAllTasksByUserId(
           validatedData,
+          userId,
         );
       return tasks;
     } catch (err: any) {
@@ -47,9 +50,12 @@ export class TasksController {
     res: Response,
   ) {
     const validatedData: ITask = matchedData(req);
+    const userId = (req as any).user
+      ?._id as Schema.Types.ObjectId;
     try {
       return await this.tasksService.createTask(
         validatedData,
+        userId,
       );
     } catch (err: any) {
       throw new Error(err);

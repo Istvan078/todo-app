@@ -38,7 +38,7 @@ export class UsersService {
               _id: user._id,
             },
             process.env.JWT_SECRET_KEY as string,
-            { expiresIn: '10m' },
+            { expiresIn: '7d' },
           );
           return {
             firstName: user.firstName,
@@ -46,7 +46,7 @@ export class UsersService {
             email: user.email,
             _id: user._id,
             token: token,
-            tokenExp: new Date().getTime() + 10 * 60 * 1000, // token expires in 10 minutes
+            tokenExp: Date.now() + 7 * 24 * 60 * 60 * 1000, // token expires in 7 days
           };
         }
         throw new Error('Wrong password');

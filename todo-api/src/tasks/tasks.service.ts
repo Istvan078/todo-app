@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import { Task } from './task.schema';
-import { Model, QueryFilter } from 'mongoose';
+import { Model, QueryFilter, Schema } from 'mongoose';
 import { ITask } from './task.interface';
 import { ITaskPagination } from './interfaces/taskPagination.interface';
 
@@ -10,12 +10,19 @@ export class TasksService {
   private taskModel: Model<ITask> = Task;
 
   // Create Task
-  public async createTask(taskData: ITask) {
+  public async createTask(taskData: ITask, userId: Schema.Types.ObjectId) {
+    taskData.createdBy = userId;
     return await new this.taskModel(taskData).save();
   }
   // Find by id
   public async findById(_id: string) {
     return await this.taskModel.findById(_id);
+  }
+  // Find user's tasks by user id
+  public async findAllTasksByUserId(
+    userId: Schema.Types.ObjectId,
+  ) {
+    return await this.taskModel.find({ createdBy: userId });
   }
   // Find all
   public async findAll(pagination: ITaskPagination) {
