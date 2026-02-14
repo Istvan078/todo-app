@@ -54,26 +54,28 @@ export class GetTasksProvider {
     pagination: Partial<ITaskPagination> = { order: 'asc' },
     userId: Schema.Types.ObjectId,
   ): Promise<{ data: ITask[]; meta: {} }> {
-    const tasks: ITask[] = (
-      await this.tasksService.findAllTasksByUserId(userId)
-    ).sort((a, b) =>
+    const tasks: any =
+      await this.tasksService.findAllTasksByUserId(userId, {
+        limit: pagination.limit ?? 10,
+        page: pagination.page ?? 1,
+        order: pagination.order ?? 'dsc',
+      });
+    tasks.tasks.sort((a: any, b: any) =>
       pagination.order === 'asc'
         ? b.dueDate.getTime() - a.dueDate.getTime()
         : a.dueDate.getTime() - b.dueDate.getTime(),
     );
 
-    const totalTasks = tasks.length;
-    const completedTasks = tasks.filter(
-      (t) => t.status === 'completed',
-    ).length;
-    const todoTasks = tasks.filter(
-      (t) => t.status === 'todo',
-    ).length;
-    const inProgressTasks = tasks.filter(
-      (t) => t.status === 'inProgress',
-    ).length;
+    const totalTasks = tasks.tasks?.length;
+    const completedTasks = tasks.completedTasks?.length;
+    const todoTasks = tasks.tasks.filter(
+      (t: any) => t.status === 'todo',
+    )?.length;
+    const inProgressTasks = tasks.tasks.filter(
+      (t: any) => t.status === 'inProgress',
+    )?.length;
     return {
-      data: tasks,
+      data: tasks.tasks,
       meta: {
         totalTasks,
         completedTasks,

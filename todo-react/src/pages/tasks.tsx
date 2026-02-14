@@ -8,6 +8,7 @@ import type { ITask } from "@/types/task.interface";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { LogOut } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 function todaysDate() {
   const today = new Date();
@@ -62,77 +63,87 @@ export const Tasks: FC = (): ReactElement => {
   }
 
   return (
-    <section className="sm:flex sm:flex-row w-full p-1 sm:p-4 gap-8 grid">
-      <section className="sm:flex sm:basis-2/3 justify-center">
-        <div className="flex flex-col sm:w-4/5 p-4">
-          <h1 className="text-white font-bold text-2xl mb-8">
-            {`Task as on: ${todaysDate()}`}
-          </h1>
-          <div className="flex justify-around mb-5 sm:mb-12">
-            <TasksCounter
-              status="todo"
-              count={
-                data && data.meta && "todoTasks" in data.meta
-                  ? (data.meta.todoTasks as number)
-                  : 0
-              }
-            ></TasksCounter>
-            <TasksCounter
-              status="inProgress"
-              count={
-                data && data.meta && "inProgressTasks" in data.meta
-                  ? (data.meta.inProgressTasks as number)
-                  : 0
-              }
-            ></TasksCounter>
-            <TasksCounter
-              status="completed"
-              count={
-                data && data.meta && "completedTasks" in data.meta
-                  ? (data.meta.completedTasks as number)
-                  : 0
-              }
-            ></TasksCounter>
-          </div>
-          <div className="mb-2 flex justify-between gap-4">
-            <Button onClick={showTaskSidebar}>New Task</Button>
-            <button onClick={logout} className="flex items-center gap-2">
-              <LogOut className="h-4 w-4" />
-              Logout
-            </button>
-          </div>
-          {data &&
-            Array.isArray(data.data) &&
-            data.data.every(
-              (item): item is ITask =>
-                "_id" in item &&
-                "title" in item &&
-                "status" in item &&
-                "priority" in item &&
-                "dueDate" in item,
-            ) &&
-            data.data.map((task) => (
-              <Task
-                key={task._id}
-                _id={task._id}
-                title={task.title}
-                description={task.description}
-                status={task.status}
-                priority={task.priority}
-                dueDate={task.dueDate}
-                onEdit={() => openEditTask(task)}
-              ></Task>
-            ))}
+    <>
+      {!data && (
+        <div className="flex items-center justify-center h-screen">
+          <Spinner className="h-8 w-8"></Spinner>
         </div>
-      </section>
-      <section className="sm:flex sm:basis-1/3">
-        {isSidebarOpen && (
-          <TaskSidebar
-            onClose={() => setIsSidebarOpen(false)}
-            editTaskData={editTaskData}
-          ></TaskSidebar>
-        )}
-      </section>
-    </section>
+      )}
+      ;
+      {data && (
+        <section className="sm:flex sm:flex-row w-full p-1 sm:p-4 gap-8 grid">
+          <section className="sm:flex sm:basis-2/3 justify-center">
+            <div className="flex flex-col sm:w-4/5 p-4">
+              <h1 className="text-white font-bold text-2xl mb-8">
+                {`Task as on: ${todaysDate()}`}
+              </h1>
+              <div className="flex justify-around mb-5 sm:mb-12">
+                <TasksCounter
+                  status="todo"
+                  count={
+                    data && data.meta && "todoTasks" in data.meta
+                      ? (data.meta.todoTasks as number)
+                      : 0
+                  }
+                ></TasksCounter>
+                <TasksCounter
+                  status="inProgress"
+                  count={
+                    data && data.meta && "inProgressTasks" in data.meta
+                      ? (data.meta.inProgressTasks as number)
+                      : 0
+                  }
+                ></TasksCounter>
+                <TasksCounter
+                  status="completed"
+                  count={
+                    data && data.meta && "completedTasks" in data.meta
+                      ? (data.meta.completedTasks as number)
+                      : 0
+                  }
+                ></TasksCounter>
+              </div>
+              <div className="mb-2 flex justify-between gap-4">
+                <Button onClick={showTaskSidebar}>New Task</Button>
+                <button onClick={logout} className="flex items-center gap-2">
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </button>
+              </div>
+              {data &&
+                Array.isArray(data.data) &&
+                data.data.every(
+                  (item): item is ITask =>
+                    "_id" in item &&
+                    "title" in item &&
+                    "status" in item &&
+                    "priority" in item &&
+                    "dueDate" in item,
+                ) &&
+                data.data.map((task) => (
+                  <Task
+                    key={task._id}
+                    _id={task._id}
+                    title={task.title}
+                    description={task.description}
+                    status={task.status}
+                    priority={task.priority}
+                    dueDate={task.dueDate}
+                    onEdit={() => openEditTask(task)}
+                  ></Task>
+                ))}
+            </div>
+          </section>
+          <section className="sm:flex sm:basis-1/3">
+            {isSidebarOpen && (
+              <TaskSidebar
+                onClose={() => setIsSidebarOpen(false)}
+                editTaskData={editTaskData}
+              ></TaskSidebar>
+            )}
+          </section>
+        </section>
+      )}
+    </>
   );
 };

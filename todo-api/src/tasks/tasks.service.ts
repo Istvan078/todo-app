@@ -10,7 +10,10 @@ export class TasksService {
   private taskModel: Model<ITask> = Task;
 
   // Create Task
-  public async createTask(taskData: ITask, userId: Schema.Types.ObjectId) {
+  public async createTask(
+    taskData: ITask,
+    userId: Schema.Types.ObjectId,
+  ) {
     taskData.createdBy = userId;
     return await new this.taskModel(taskData).save();
   }
@@ -21,8 +24,22 @@ export class TasksService {
   // Find user's tasks by user id
   public async findAllTasksByUserId(
     userId: Schema.Types.ObjectId,
-  ) {
-    return await this.taskModel.find({ createdBy: userId });
+    pagination: ITaskPagination,
+  ): Promise<{ tasks: ITask[]; completedTasks: any }> {
+    const completedTasks = await this.taskModel.find({
+      createdBy: userId,
+      status: 'completed',
+    });
+    return {
+      tasks: await this.taskModel
+        .find({
+          createdBy: userId,
+          status: { $in: ['todo', 'inProgress'] },
+        })
+        .limit(pagination.limit)
+        .skip(pagination.page - 1),
+      completedTasks: completedTasks,
+    };
   }
   // Find all
   public async findAll(pagination: ITaskPagination) {
@@ -44,10 +61,10 @@ export class TasksService {
       })
       .limit(pagination.limit)
       // .skip() - How many pages to skip when paginating all documents
-      .skip(pagination.page - 1)
-      .sort({
-        createdAt: pagination.order === 'asc' ? 1 : -1,
-      });
+      .skip(pagination.page - 1);
+    // .sort({
+    //   createdAt: pagination.order === 'asc' ? 1 : -1,
+    // });
   }
 
   public async countDocuments(filter?: QueryFilter<ITask>) {
