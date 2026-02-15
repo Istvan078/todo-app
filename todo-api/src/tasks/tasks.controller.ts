@@ -34,11 +34,14 @@ export class TasksController {
     const userId = (req as any).user
       ?._id as Schema.Types.ObjectId;
     try {
-      const tasks: { data: ITask[]; meta: {} } =
-        await this.getTasksProvider.findAllTasksByUserId(
-          validatedData,
-          userId,
-        );
+      const tasks: {
+        data: ITask[];
+        meta: {};
+        completedTasks: any;
+      } = await this.getTasksProvider.findAllTasksByUserId(
+        validatedData,
+        userId,
+      );
       return tasks;
     } catch (err: any) {
       throw new Error(err);

@@ -29,9 +29,11 @@ export const Tasks: FC = (): ReactElement => {
   const [editTaskData, setEditTaskData] = useState<ITask | undefined>(
     undefined,
   );
+  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+
+  console.log("Fetched tasks data:", data);
 
   const navigate = useNavigate();
-
   useEffect(() => {
     const autoLoginToken = localStorage.getItem("token");
     if (!autoLoginToken) navigate("/login", { replace: true });
@@ -66,10 +68,12 @@ export const Tasks: FC = (): ReactElement => {
     <>
       {!data && (
         <div className="flex items-center justify-center h-screen">
-          <Spinner className="h-8 w-8"></Spinner>
+          <Button disabled size="sm" variant="outline">
+            <Spinner data-icon="inline-start" className="h-8 w-8" />
+            Loading...
+          </Button>
         </div>
       )}
-      ;
       {data && (
         <section className="sm:flex sm:flex-row w-full p-1 sm:p-4 gap-8 grid">
           <section className="sm:flex sm:basis-2/3 justify-center">
@@ -94,14 +98,22 @@ export const Tasks: FC = (): ReactElement => {
                       : 0
                   }
                 ></TasksCounter>
-                <TasksCounter
-                  status="completed"
-                  count={
-                    data && data.meta && "completedTasks" in data.meta
-                      ? (data.meta.completedTasks as number)
-                      : 0
-                  }
-                ></TasksCounter>
+
+                <div
+                  onClick={setShowCompletedTasks.bind(
+                    null,
+                    !showCompletedTasks,
+                  )}
+                >
+                  <TasksCounter
+                    status="completed"
+                    count={
+                      data && data.meta && "completedTasks" in data.meta
+                        ? (data.meta.completedTasks as number)
+                        : 0
+                    }
+                  ></TasksCounter>
+                </div>
               </div>
               <div className="mb-2 flex justify-between gap-4">
                 <Button onClick={showTaskSidebar}>New Task</Button>
@@ -111,6 +123,7 @@ export const Tasks: FC = (): ReactElement => {
                 </button>
               </div>
               {data &&
+                !showCompletedTasks &&
                 Array.isArray(data.data) &&
                 data.data.every(
                   (item): item is ITask =>
@@ -121,6 +134,30 @@ export const Tasks: FC = (): ReactElement => {
                     "dueDate" in item,
                 ) &&
                 data.data.map((task) => (
+                  <Task
+                    key={task._id}
+                    _id={task._id}
+                    title={task.title}
+                    description={task.description}
+                    status={task.status}
+                    priority={task.priority}
+                    dueDate={task.dueDate}
+                    onEdit={() => openEditTask(task)}
+                  ></Task>
+                ))}
+
+              {data &&
+                showCompletedTasks &&
+                Array.isArray((data as any).completedTasks) &&
+                (data as any).completedTasks.every(
+                  (item: any): item is ITask =>
+                    "_id" in item &&
+                    "title" in item &&
+                    "status" in item &&
+                    "priority" in item &&
+                    "dueDate" in item,
+                ) &&
+                (data as any).completedTasks.map((task: any) => (
                   <Task
                     key={task._id}
                     _id={task._id}

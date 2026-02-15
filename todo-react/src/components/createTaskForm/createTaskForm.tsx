@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import {
@@ -54,6 +54,7 @@ export const CreateTaskForm = ({
   const { mutate: updateTask, isSuccess: isUpdateSuccess } = useUpdateTask();
   const { mutate: createTask, isSuccess: isCreateSuccess } = useCreateTask();
   const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function onSubmit(values: z.infer<typeof CreateTaskSchema>) {
     const dueDate = values.dueDate.toISOString();
@@ -65,18 +66,24 @@ export const CreateTaskForm = ({
           refetchType: "all",
         });
         onCreated();
+        setIsSubmitting(false);
+      },
+      onError: (error: any) => {
+        console.log("Error creating/updating task:", error);
+        setIsSubmitting(false);
       },
     };
 
     if (editTaskData?._id) {
+      setIsSubmitting(true);
       updateTask({ ...values, dueDate, _id: editTaskData._id }, commonOptions);
     } else {
+      setIsSubmitting(true);
       createTask({ ...values, dueDate }, commonOptions);
     }
   }
 
   useEffect(() => {
-    console.log("Edit task data in form:", editTaskData);
     if (editTaskData) {
       form.reset({
         title: editTaskData.title,
@@ -244,7 +251,7 @@ export const CreateTaskForm = ({
             ></FormField>
           </div>
           <div className="py-2 flex justify-end">
-            <Button type="submit">
+            <Button disabled={isSubmitting} type="submit">
               {editTaskData ? "Update Task" : "Create Task"}
             </Button>
           </div>

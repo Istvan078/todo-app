@@ -20,7 +20,8 @@ export function useCreateTask() {
   return useMutation({
     mutationFn: createTask,
     onSuccess: (response: IResponse<ITask>) => {
-      console.log(response);
+      console.log("Task created successfully:");
+      return response;
     },
     onError: (error) => {
       console.log(error);

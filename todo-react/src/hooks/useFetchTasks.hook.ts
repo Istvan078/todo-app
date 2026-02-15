@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 const fetchTasks = async (): Promise<IResponse<ITask[]> | undefined> => {
   const headers = setHeaders();
   try {
+    console.log("***Fetching tasks**...");
     const response = await fetch(`${import.meta.env.VITE_API_URL}tasks`, {
       method: "GET",
       headers: headers,
