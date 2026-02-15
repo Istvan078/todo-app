@@ -3,7 +3,9 @@ import type { IResponse } from "@/types/response.interface";
 import type { ITask } from "@/types/task.interface";
 import { useQuery } from "@tanstack/react-query";
 
-const fetchTasks = async (): Promise<IResponse<ITask[]> | undefined> => {
+const fetchTasks = async (): Promise<
+  IResponse<{ todo: ITask[]; completed: ITask[] }> | undefined
+> => {
   const headers = setHeaders();
   try {
     console.log("***Fetching tasks**...");

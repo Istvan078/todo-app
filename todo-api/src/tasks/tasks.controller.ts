@@ -35,9 +35,10 @@ export class TasksController {
       ?._id as Schema.Types.ObjectId;
     try {
       const tasks: {
-        data: ITask[];
+        data:
+          | ITask[]
+          | { todo: ITask[]; completed: ITask[] };
         meta: {};
-        completedTasks: any;
       } = await this.getTasksProvider.findAllTasksByUserId(
         validatedData,
         userId,

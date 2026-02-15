@@ -54,9 +54,8 @@ export class GetTasksProvider {
     pagination: Partial<ITaskPagination> = { order: 'asc' },
     userId: Schema.Types.ObjectId,
   ): Promise<{
-    data: ITask[];
+    data: ITask[] |{ todo: ITask[]; completed: ITask[] };
     meta: {};
-    completedTasks: any;
   }> {
     const tasks: any =
       await this.tasksService.findAllTasksByUserId(userId, {
@@ -79,14 +78,16 @@ export class GetTasksProvider {
       (t: any) => t.status === 'inProgress',
     )?.length;
     return {
-      data: tasks.tasks,
+      data: {
+        todo: tasks.tasks,
+        completed: tasks.completedTasks,
+      },
       meta: {
         totalTasks,
         completedTasks,
         todoTasks,
         inProgressTasks,
       },
-      completedTasks: tasks.completedTasks,
     };
   }
 }

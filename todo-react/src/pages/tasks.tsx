@@ -24,14 +24,14 @@ function todaysDate() {
 
 // Function component, returns reactelement
 export const Tasks: FC = (): ReactElement => {
-  const { data } = useFetchTasks({});
+  const { data }: { data: any } = useFetchTasks({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [editTaskData, setEditTaskData] = useState<ITask | undefined>(
     undefined,
   );
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
 
-  console.log("Fetched tasks data:", data);
+  console.log("Fetched tasks data:", data?.data);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -122,18 +122,18 @@ export const Tasks: FC = (): ReactElement => {
                   Logout
                 </button>
               </div>
-              {data &&
+              {data?.data &&
                 !showCompletedTasks &&
-                Array.isArray(data.data) &&
-                data.data.every(
-                  (item): item is ITask =>
+                Array.isArray(data.data.todo) &&
+                data.data.todo.every(
+                  (item: any): item is ITask =>
                     "_id" in item &&
                     "title" in item &&
                     "status" in item &&
                     "priority" in item &&
                     "dueDate" in item,
                 ) &&
-                data.data.map((task) => (
+                data.data.todo.map((task: any) => (
                   <Task
                     key={task._id}
                     _id={task._id}
@@ -146,10 +146,10 @@ export const Tasks: FC = (): ReactElement => {
                   ></Task>
                 ))}
 
-              {data &&
+              {data?.data &&
                 showCompletedTasks &&
-                Array.isArray((data as any).completedTasks) &&
-                (data as any).completedTasks.every(
+                Array.isArray(data.data.completed) &&
+                data.data.completed.every(
                   (item: any): item is ITask =>
                     "_id" in item &&
                     "title" in item &&
@@ -157,7 +157,7 @@ export const Tasks: FC = (): ReactElement => {
                     "priority" in item &&
                     "dueDate" in item,
                 ) &&
-                (data as any).completedTasks.map((task: any) => (
+                data.data.completed.map((task: any) => (
                   <Task
                     key={task._id}
                     _id={task._id}
