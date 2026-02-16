@@ -26,10 +26,14 @@ export class TasksService {
     userId: Schema.Types.ObjectId,
     pagination: ITaskPagination,
   ): Promise<{ tasks: ITask[]; completedTasks: any }> {
-    const completedTasks = await this.taskModel.find({
-      createdBy: userId,
-      status: 'completed',
-    });
+    const completedTasks = await this.taskModel
+      .find({
+        createdBy: userId,
+        status: 'completed',
+      })
+      .sort({
+        dueDate: pagination.order === 'asc' ? 1 : -1,
+      });
     return {
       tasks: await this.taskModel
         .find({

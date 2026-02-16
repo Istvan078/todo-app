@@ -7,7 +7,7 @@ import { useFetchTasks } from "@/hooks/useFetchTasks.hook";
 import type { ITask } from "@/types/task.interface";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
-import { LogOut } from "lucide-react";
+import { LogOut, NotebookIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
 function todaysDate() {
@@ -82,14 +82,17 @@ export const Tasks: FC = (): ReactElement => {
                 {`Task as on: ${todaysDate()}`}
               </h1>
               <div className="flex justify-around mb-5 sm:mb-12">
-                <TasksCounter
-                  status="todo"
-                  count={
-                    data && data.meta && "todoTasks" in data.meta
-                      ? (data.meta.todoTasks as number)
-                      : 0
-                  }
-                ></TasksCounter>
+                <div onClick={setShowCompletedTasks.bind(null, false)}>
+                  <TasksCounter
+                    status="todo"
+                    count={
+                      data && data.meta && "todoTasks" in data.meta
+                        ? (data.meta.todoTasks as number)
+                        : 0
+                    }
+                    isActive={!showCompletedTasks}
+                  ></TasksCounter>
+                </div>
                 <TasksCounter
                   status="inProgress"
                   count={
@@ -97,14 +100,10 @@ export const Tasks: FC = (): ReactElement => {
                       ? (data.meta.inProgressTasks as number)
                       : 0
                   }
+                  isActive={false}
                 ></TasksCounter>
 
-                <div
-                  onClick={setShowCompletedTasks.bind(
-                    null,
-                    !showCompletedTasks,
-                  )}
-                >
+                <div onClick={setShowCompletedTasks.bind(null, true)}>
                   <TasksCounter
                     status="completed"
                     count={
@@ -112,11 +111,14 @@ export const Tasks: FC = (): ReactElement => {
                         ? (data.meta.completedTasks as number)
                         : 0
                     }
+                    isActive={showCompletedTasks}
                   ></TasksCounter>
                 </div>
               </div>
               <div className="mb-2 flex justify-between gap-4">
-                <Button onClick={showTaskSidebar}>New Task</Button>
+                <Button onClick={showTaskSidebar}>
+                  <NotebookIcon className="h-4 w-4" /> New Task
+                </Button>
                 <button onClick={logout} className="flex items-center gap-2">
                   <LogOut className="h-4 w-4" />
                   Logout
