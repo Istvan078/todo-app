@@ -103,7 +103,7 @@ export const CreateTaskForm = ({
   }, [isUpdateSuccess, isCreateSuccess, editTaskData, form]);
 
   return (
-    <div>
+    <div className="overflow-auto">
       <h2 className="text-xl mb-4">
         {editTaskData ? "Edit Task" : "Create a new task"}
       </h2>

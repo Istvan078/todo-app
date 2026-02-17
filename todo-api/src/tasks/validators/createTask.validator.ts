@@ -10,11 +10,11 @@ export const createTaskValidator = checkSchema({
     isString: true,
     isLength: {
       options: {
-        max: 50,
-        min: 8,
+        max: 80,
+        min: 3,
       },
       errorMessage:
-        'Title has to be minimum 8, maximum 50 characters',
+        'Title has to be minimum 3, maximum 80 characters',
     },
     trim: true,
   },

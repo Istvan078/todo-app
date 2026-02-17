@@ -157,7 +157,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
             <Badge className="justify-self-start self-end bg-green-800 text-gray-300 tracking-widest font-bold">
               Completed
             </Badge>
-            <CheckIcon className="h-4 w-4 ml-auto text-green-500" />{" "}
+            <CheckIcon className="h-4 w-4 ml-auto text-green-500" />
           </>
         )}
       </CardFooter>

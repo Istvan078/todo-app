@@ -7,8 +7,8 @@ const taskSchema: Schema<ITask> = new Schema(
       type: String,
       required: [true, 'Please enter a title'],
       maxLength: [
-        50,
-        'Title cannot be more than 100 characters',
+        80,
+        'Title cannot be more than 80 characters',
       ],
       // SANITATIONS
       // removes white spaces
@@ -17,7 +17,7 @@ const taskSchema: Schema<ITask> = new Schema(
     description: {
       type: String,
       required: true,
-      maxLength: 500,
+      maxLength: 5000,
       trim: true,
     },
     status: {
