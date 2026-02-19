@@ -1,9 +1,13 @@
+import { useCreateSub } from "@/hooks/useCreateSub.hook";
 import { useFetchPubKey } from "@/hooks/useFetchPubKey.hook";
+import type { IPushSubscribeBody } from "@/types/pushNotification.interface";
 // import { useQueryClient } from "@tanstack/react-query";
 import type { ReactElement } from "react";
 
 export function PushSettings(): ReactElement {
   const { data, isLoading, error } = useFetchPubKey();
+  const { mutate } = useCreateSub();
+
   const subForPushNotif = () => {
     // itt majd a subscribe logika lesz (permission + pushManager.subscribe + POST /subscribe)
     console.log(data?.data?.publicKey.publicKey);
@@ -22,9 +26,12 @@ export function PushSettings(): ReactElement {
       userVisibleOnly: true,
       applicationServerKey: publicKey,
     });
-    const body = subscription.toJSON();
-    console.log(body);
+    const subBody = subscription.toJSON() as unknown as IPushSubscribeBody;
+    mutate(subBody, {
+      onSuccess: (data) => console.log(data),
+    });
   }
+
   return (
     <div>
       <button onClick={subForPushNotif}>Subscribe</button>
