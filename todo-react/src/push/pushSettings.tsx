@@ -13,8 +13,10 @@ export function PushSettings(): ReactElement {
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   async function getSubscriptionFromBrowser() {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") throw new Error("Permission not granted");
     const reg = await navigator.serviceWorker.ready;
-    const publicKey = data?.data?.publicKey.publicKe;
+    const publicKey = data?.data?.publicKey.publicKey;
     console.log(publicKey);
     const subscription = await reg.pushManager.subscribe({
       userVisibleOnly: true,
