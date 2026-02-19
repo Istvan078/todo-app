@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { LogOut, NotebookIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { PushSettings } from "@/push/pushSettings";
 
 function todaysDate() {
   const today = new Date();
@@ -81,6 +82,8 @@ export const Tasks: FC = (): ReactElement => {
               <h1 className="text-white font-bold text-2xl mb-8">
                 {`Task as on: ${todaysDate()}`}
               </h1>
+              <PushSettings></PushSettings>
+
               <div className="flex justify-around mb-5 sm:mb-12">
                 <div onClick={setShowCompletedTasks.bind(null, false)}>
                   <TasksCounter

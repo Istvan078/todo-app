@@ -9,6 +9,8 @@ import { DeleteTaskProvider } from '../tasks/providers/deleteTask.provider';
 import { UsersRouter } from '../users/users.router';
 import { UsersService } from '../users/users.service';
 import { PushService } from '../notifications/push.service';
+import { PushRouter } from '../notifications/push.router';
+import { PushController } from '../notifications/push.controller';
 
 export const container: Container = new Container();
 
@@ -37,3 +39,5 @@ container.bind(UsersService).toSelf().inTransientScope();
 
 // NOTIFICATIONS RELATED
 container.bind(PushService).toSelf().inTransientScope();
+container.bind(PushController).toSelf().inTransientScope();
+container.bind(PushRouter).toSelf().inTransientScope();

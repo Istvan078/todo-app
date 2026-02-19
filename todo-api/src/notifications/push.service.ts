@@ -1,6 +1,7 @@
 import webpush from 'web-push';
 import { PushSubscription } from './pushSubscription.schema';
 import { injectable } from 'inversify';
+import mongoose from 'mongoose';
 
 // PUSH PAYLOAD TYPE
 type PushPayload = {
@@ -26,7 +27,7 @@ webpush.setVapidDetails(subject, publicKey, privateKey);
 @injectable()
 export class PushService {
   async saveSubscription(
-    userId: string,
+    userId: mongoose.Schema.Types.ObjectId,
     subscription: webpush.PushSubscription,
   ) {
     await PushSubscription.updateOne(

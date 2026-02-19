@@ -10,11 +10,10 @@ import { registerSW } from "virtual:pwa-register";
 registerSW({
   immediate: true,
   onOfflineReady() {
-    console.log("Offline ready");
+    console.log("Service worker is ready to handle offline functionality.");
   },
   onNeedRefresh() {
     console.log("New content available, refresh to update.");
-    // ide tehetsz toastot + “Reload” gombot
   },
 });
 
