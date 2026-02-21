@@ -21,12 +21,12 @@ export function PushSettings(): ReactElement {
     if (permission !== "granted") throw new Error("Permission not granted");
     const reg = await navigator.serviceWorker.ready;
     const publicKey = data?.data?.publicKey.publicKey;
-    console.log(publicKey);
     const subscription = await reg.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: publicKey,
     });
     const subBody = subscription.toJSON() as unknown as IPushSubscribeBody;
+    console.log(subBody);
     mutate(subBody, {
       onSuccess: (data) => console.log(data),
     });
