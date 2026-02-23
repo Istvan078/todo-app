@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ITask } from "@/types/task.interface";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
+import { useSendPush } from "@/hooks/useSendPush.hook";
 
 export const CreateTaskForm = ({
   onCreated,
@@ -53,6 +54,7 @@ export const CreateTaskForm = ({
 
   const { mutate: updateTask, isSuccess: isUpdateSuccess } = useUpdateTask();
   const { mutate: createTask, isSuccess: isCreateSuccess } = useCreateTask();
+  const { mutate: sendPush } = useSendPush();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -67,6 +69,13 @@ export const CreateTaskForm = ({
         });
         onCreated();
         setIsSubmitting(false);
+        sendPush({
+          title: editTaskData ? "Task Updated" : "New Task Created",
+          body: `Task "${values.title}" has been ${
+            editTaskData ? "updated" : "created"
+          }`,
+          url: window.location.origin,
+        });
       },
       onError: (error: any) => {
         console.log("Error creating/updating task:", error);
@@ -219,12 +228,13 @@ export const CreateTaskForm = ({
                         selected={field.value}
                         onSelect={field.onChange}
                         initialFocus
+                        // Disable past dates
                         disabled={(date) =>
                           date <
                           new Date(
                             new Date().getTime() - 1 * 24 * 60 * 60 * 1000,
                           )
-                        } // Disable past dates
+                        }
                       />
                     </PopoverContent>
                   </Popover>

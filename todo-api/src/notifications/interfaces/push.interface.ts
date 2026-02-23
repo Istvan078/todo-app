@@ -12,3 +12,12 @@ export interface IPushSubscribeBody {
 export interface IPushUnsubscribeBody {
   endpoint: string;
 }
+
+// PUSH PAYLOAD TYPE
+export type PushPayload = {
+  title: string;
+  body?: string;
+  url?: string;
+  icon?: string;
+  badge?: string;
+};

@@ -11,7 +11,6 @@ export const subscribeValidator = checkSchema({
   expirationTime: {
     in: ['body'],
     optional: true,
-    isInt: true,
     errorMessage: 'Expiration time must be an integer',
   },
   keys: {

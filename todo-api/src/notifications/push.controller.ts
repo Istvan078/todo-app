@@ -7,6 +7,7 @@ import { PushService } from './push.service';
 import {
   IPushSubscribeBody,
   IPushUnsubscribeBody,
+  PushPayload,
 } from './interfaces/push.interface';
 
 @injectable()
@@ -36,11 +37,12 @@ export class PushController {
       ?._id as Schema.Types.ObjectId;
 
     try {
-      await this.pushService.saveSubscription(
-        userId,
-        validatedData,
-      );
-      return { ok: true };
+      const savedSubMsg =
+        await this.pushService.saveSubscription(
+          userId,
+          validatedData,
+        );
+      return savedSubMsg;
     } catch (err: any) {
       throw new Error(err);
     }
@@ -63,6 +65,22 @@ export class PushController {
         validatedData.endpoint,
       );
       return { ok: true };
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+
+  public async sendPushToUser(req: Request, res: Response) {
+    const payload: PushPayload = matchedData(req);
+    const userId = (req as any).user._id;
+    try {
+      await this.pushService.sendPushToUser(
+        userId,
+        payload,
+      );
+      return {
+        message: 'Payload sent successfully to user.',
+      };
     } catch (err: any) {
       throw new Error(err);
     }

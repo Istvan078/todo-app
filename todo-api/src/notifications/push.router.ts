@@ -3,6 +3,9 @@ import { inject, injectable } from 'inversify';
 import { PushController } from './push.controller';
 import { StatusCodes } from 'http-status-codes';
 import { validationResult } from 'express-validator';
+import { subscribeValidator } from './validators/subscribe.validator';
+import { unsubscribeValidator } from './validators/unsubscribe.validator';
+import { pushValidator } from './validators/push.validator';
 
 @injectable()
 export class PushRouter {
@@ -30,14 +33,15 @@ export class PushRouter {
     // POST /subscribe - Subscribe to push notifications
     this.router.post(
       '/subscribe',
+      subscribeValidator,
       async (req: Request, res: Response) => {
         const result = validationResult(req);
         if (result.isEmpty()) {
-          const savedSubscription =
+          const sucessMessage =
             await this.pushController.subscribe(req, res);
           return res
             .status(StatusCodes.CREATED)
-            .json(savedSubscription);
+            .json(sucessMessage);
         } else {
           return res
             .status(StatusCodes.BAD_REQUEST)
@@ -49,6 +53,7 @@ export class PushRouter {
     // Unsubscribe notifications
     this.router.post(
       '/unsubscribe',
+      unsubscribeValidator,
       async (req: Request, res: Response) => {
         const result = validationResult(req);
         if (result.isEmpty()) {
@@ -57,6 +62,29 @@ export class PushRouter {
           return res
             .status(StatusCodes.OK)
             .json(deletedSubscription);
+        } else {
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(result.array());
+        }
+      },
+    );
+
+    // Send push notification
+    this.router.post(
+      '/send-push',
+      pushValidator,
+      async (req: Request, res: Response) => {
+        const result = validationResult(req);
+        if (result.isEmpty()) {
+          const sendResult =
+            await this.pushController.sendPushToUser(
+              req,
+              res,
+            );
+          return res
+            .status(StatusCodes.OK)
+            .json(sendResult);
         } else {
           return res
             .status(StatusCodes.BAD_REQUEST)

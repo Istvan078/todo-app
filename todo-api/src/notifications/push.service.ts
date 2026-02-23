@@ -1,16 +1,11 @@
 import webpush from 'web-push';
 import { PushSubscription } from './pushSubscription.schema';
 import { injectable } from 'inversify';
-import mongoose from 'mongoose';
-
-// PUSH PAYLOAD TYPE
-type PushPayload = {
-  title: string;
-  body?: string;
-  url?: string;
-  icon?: string;
-  badge?: string;
-};
+import mongoose, { Model } from 'mongoose';
+import {
+  IPushSubscribeBody,
+  PushPayload,
+} from './interfaces/push.interface';
 
 const subject = process.env.VAPID_SUBJECT;
 const publicKey = process.env.VAPID_PUBLIC_KEY;
@@ -26,11 +21,13 @@ webpush.setVapidDetails(subject, publicKey, privateKey);
 
 @injectable()
 export class PushService {
+  private pushModel: Model<IPushSubscribeBody> =
+    PushSubscription;
   async saveSubscription(
     userId: mongoose.Schema.Types.ObjectId,
     subscription: webpush.PushSubscription,
   ) {
-    await PushSubscription.updateOne(
+    await this.pushModel.updateOne(
       {
         endpoint: subscription.endpoint,
       },
@@ -48,11 +45,12 @@ export class PushService {
         upsert: true,
       },
     );
+    return { message: 'Subscription saved successfully' };
   }
 
   // Delete subscription by endpoint
   async deleteByEndpoint(endpoint: string) {
-    await PushSubscription.deleteOne({ endpoint });
+    await this.pushModel.deleteOne({ endpoint });
   }
 
   async sendPushToSubscription(
@@ -76,9 +74,11 @@ export class PushService {
     userId: string,
     payload: PushPayload,
   ) {
-    const subscriptions = await PushSubscription.find({
-      userId,
-    }).lean();
+    const subscriptions = await this.pushModel
+      .find({
+        userId,
+      })
+      .lean();
     for (const s of subscriptions) {
       const sub: webpush.PushSubscription = {
         endpoint: s.endpoint,

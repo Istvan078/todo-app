@@ -5,7 +5,7 @@ import {
 } from 'http-status-codes';
 
 interface IResponse {
-  status: 'succes' | 'error';
+  status: 'success' | 'error';
   statusCode: number;
   message: string;
   data?: any;
@@ -29,7 +29,7 @@ export function responseFormatter(
     const response: IResponse = {
       status:
         statusCode >= 200 && statusCode < 300
-          ? 'succes'
+          ? 'success'
           : 'error',
       statusCode: statusCode,
       // set the message based on statuscode
