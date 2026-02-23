@@ -66,8 +66,20 @@ export class PushService {
   }
 
   // Delete subscription by endpoint
-  async deleteByEndpoint(endpoint: string) {
-    await this.pushModel.deleteOne({ endpoint });
+  async deleteByEndpoint(
+    endpoint: string,
+    userId: mongoose.Schema.Types.ObjectId,
+  ) {
+    await this.pushModel.updateOne(
+      { userId: userId },
+      {
+        $pull: {
+          subscriptions: {
+            endpoint: endpoint,
+          },
+        },
+      },
+    );
   }
 
   async sendPushToSubscription(
@@ -79,11 +91,7 @@ export class PushService {
       await webpush.sendNotification(sub, body);
       return true;
     } catch (error: any) {
-      const status = error?.statusCode;
-      if (status === 410 || status === 404) {
-        await this.deleteByEndpoint(sub.endpoint);
-      }
-      throw error;
+      throw new Error(error.message);
     }
   }
 

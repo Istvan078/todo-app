@@ -32,8 +32,6 @@ export const Tasks: FC = (): ReactElement => {
   );
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
 
-  console.log("Fetched tasks data:", data?.data);
-
   const navigate = useNavigate();
   useEffect(() => {
     const autoLoginToken = localStorage.getItem("token");
@@ -79,10 +77,10 @@ export const Tasks: FC = (): ReactElement => {
         <section className="sm:flex sm:flex-row w-full p-1 sm:p-4 gap-8 grid">
           <section className="sm:flex sm:basis-2/3 justify-center">
             <div className="flex flex-col sm:w-4/5 p-4">
-              <h1 className="text-white font-bold text-2xl mb-8">
+              <PushSettings></PushSettings>
+              <h1 className="text-white font-bold text-2xl mt-3 mb-3">
                 {`Task as on: ${todaysDate()}`}
               </h1>
-              <PushSettings></PushSettings>
 
               <div className="flex justify-around mb-5 sm:mb-12">
                 <div onClick={setShowCompletedTasks.bind(null, false)}>

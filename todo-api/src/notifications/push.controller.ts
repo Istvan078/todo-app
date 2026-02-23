@@ -63,8 +63,9 @@ export class PushController {
 
       await this.pushService.deleteByEndpoint(
         validatedData.endpoint,
+        userId,
       );
-      return { ok: true };
+      return { message: 'Unsubscribed successfully.' };
     } catch (err: any) {
       throw new Error(err);
     }
