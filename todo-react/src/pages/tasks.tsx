@@ -81,7 +81,6 @@ export const Tasks: FC = (): ReactElement => {
               <h1 className="text-white font-bold text-2xl mt-3 mb-3">
                 {`Task as on: ${todaysDate()}`}
               </h1>
-              <div>SW UPDATE TEST</div>
               <div className="flex justify-around mb-5 sm:mb-12">
                 <div onClick={setShowCompletedTasks.bind(null, false)}>
                   <TasksCounter

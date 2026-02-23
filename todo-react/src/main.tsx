@@ -45,7 +45,7 @@ const updateSW = registerSW({
       } catch (err) {
         console.error("SW periodic update check failed:", err);
       }
-    }, 30000);
+    }, 30 * 1000); // Check for updates every 30 seconds
   },
 });
 
