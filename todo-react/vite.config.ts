@@ -13,7 +13,7 @@ export default defineConfig({
       strategies: "injectManifest",
       srcDir: "src",
       filename: "sw.ts",
-      registerType: "autoUpdate",
+      registerType: "prompt",
       manifest: {
         name: "Todo App",
         short_name: "Todo",

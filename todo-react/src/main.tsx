@@ -7,13 +7,19 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { registerSW } from "virtual:pwa-register";
 
-registerSW({
+const updateSW = registerSW({
   immediate: true,
   onOfflineReady() {
     console.log("Service worker is ready to handle offline functionality.");
   },
   onNeedRefresh() {
-    console.log("New content available, refresh to update.");
+    console.log("New version is ready.");
+    const shouldReload = window.confirm(
+      "New version available. Please click OK to refresh.",
+    );
+    if (shouldReload) {
+      updateSW(); // Re-register the service worker to get the new version
+    }
   },
 });
 

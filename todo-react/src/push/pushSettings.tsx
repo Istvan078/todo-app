@@ -8,15 +8,7 @@ export function PushSettings(): ReactElement {
   const { data, isLoading, error } = useFetchPubKey();
   const { mutate } = useCreateSub();
 
-  const subForPushNotif = () => {
-    // itt majd a subscribe logika lesz (permission + pushManager.subscribe + POST /subscribe)
-    console.log(data?.data?.publicKey.publicKey);
-  };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {(error as Error).message}</div>;
-
-  async function getSubscriptionFromBrowser() {
+  const subForPushNotif = async () => {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") throw new Error("Permission not granted");
     const reg = await navigator.serviceWorker.ready;
@@ -30,12 +22,14 @@ export function PushSettings(): ReactElement {
     mutate(subBody, {
       onSuccess: (data) => console.log(data),
     });
-  }
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {(error as Error).message}</div>;
 
   return (
     <div>
       <button onClick={subForPushNotif}>Subscribe</button>
-      <button onClick={getSubscriptionFromBrowser}>GetSubFromBrowser</button>
     </div>
   );
 }
