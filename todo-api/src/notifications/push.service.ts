@@ -1,5 +1,5 @@
 import webpush from 'web-push';
-import { PushSubscription } from './pushSubscription.schema';
+import { PushSubscriptions } from './pushSubscription.schema';
 import { injectable } from 'inversify';
 import mongoose, { Model } from 'mongoose';
 import {
@@ -21,28 +21,45 @@ webpush.setVapidDetails(subject, publicKey, privateKey);
 
 @injectable()
 export class PushService {
-  private pushModel: Model<IPushSubscribeBody> =
-    PushSubscription;
+  private pushModel: Model<{
+    subscriptions: IPushSubscribeBody[];
+    userId: mongoose.Types.ObjectId;
+  }> = PushSubscriptions;
   async saveSubscription(
     userId: mongoose.Schema.Types.ObjectId,
     subscription: webpush.PushSubscription,
   ) {
+    // Ensure user document exists
     await this.pushModel.updateOne(
+      { userId },
       {
-        endpoint: subscription.endpoint,
-      },
-      {
-        $set: {
+        $setOnInsert: {
           userId,
-          endpoint: subscription.endpoint,
-          expirationTime:
-            subscription.expirationTime ?? null,
-          keys: subscription.keys,
+          subscriptions: [],
         },
       },
+      { upsert: true },
+    );
+
+    // Delete existing subscription with the same endpoint
+    await this.pushModel.updateOne(
+      { userId },
       {
-        // if no document matches, create a new one
-        upsert: true,
+        $pull: {
+          subscriptions: {
+            endpoint: subscription.endpoint,
+          },
+        },
+      },
+    );
+
+    // Add new subscription
+    await this.pushModel.updateOne(
+      { userId },
+      {
+        $push: {
+          subscriptions: subscription,
+        },
       },
     );
     return { message: 'Subscription saved successfully' };
@@ -74,12 +91,12 @@ export class PushService {
     userId: string,
     payload: PushPayload,
   ) {
-    const subscriptions = await this.pushModel
-      .find({
+    const userSubscription = await this.pushModel
+      .findOne({
         userId,
       })
       .lean();
-    for (const s of subscriptions) {
+    for (const s of userSubscription?.subscriptions ?? []) {
       const sub: webpush.PushSubscription = {
         endpoint: s.endpoint,
         expirationTime: s.expirationTime ?? null,
