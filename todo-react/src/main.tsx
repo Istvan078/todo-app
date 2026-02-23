@@ -13,13 +13,39 @@ const updateSW = registerSW({
     console.log("Service worker is ready to handle offline functionality.");
   },
   onNeedRefresh() {
-    console.log("New version is ready.");
     const shouldReload = window.confirm(
       "New version available. Please click OK to refresh.",
     );
     if (shouldReload) {
-      updateSW(); // Re-register the service worker to get the new version
+      updateSW(true); // Update the SW and reload the page
     }
+  },
+
+  onRegisteredSW(swUrl, registration) {
+    if (!registration) return;
+    setInterval(async () => {
+      try {
+        // Do not check for updates if the SW is still installing
+        if (registration.installing) return;
+
+        // Do not check for updates if offline
+        if ("onLine" in navigator && !navigator.onLine) return;
+
+        // Manually fetch the SW script to check for updates, bypassing the cache
+        const resp = await fetch(swUrl, {
+          cache: "no-store",
+          headers: {
+            "cache-control": "no-cache",
+          },
+        });
+        // If the response is OK, it means there's a new version of the SW available
+        if (resp.status === 200) {
+          await registration.update();
+        }
+      } catch (err) {
+        console.error("SW periodic update check failed:", err);
+      }
+    }, 30000);
   },
 });
 

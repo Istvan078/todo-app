@@ -66,19 +66,6 @@ export class PushService {
     return { message: 'Subscription saved successfully' };
   }
 
-  // Get subscription by user ID and endpoint and return true if exists, else false
-  async getSubscriptionByUserId(
-    endpoint: string,
-    userId: mongoose.Schema.Types.ObjectId,
-  ) {
-    const exists = await this.pushModel.exists({
-      userId,
-      'subscriptions.endpoint': endpoint,
-    });
-    if (exists) return true;
-    return false;
-  }
-
   // Delete subscription by endpoint
   async deleteByEndpoint(
     endpoint: string,

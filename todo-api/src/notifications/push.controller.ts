@@ -48,25 +48,6 @@ export class PushController {
     }
   }
 
-  public async getSubscription(
-    req: Request,
-    res: Response,
-  ) {
-    const userId = (req as any).user
-      ?._id as Schema.Types.ObjectId;
-    const { endpoint } = matchedData(req);
-    try {
-      const exists =
-        await this.pushService.getSubscriptionByUserId(
-          endpoint,
-          userId,
-        );
-      return { exists };
-    } catch (err: any) {
-      throw new Error(err);
-    }
-  }
-
   public async unsubscribe(
     req: Request<{}, {}, IPushUnsubscribeBody>,
     res: Response,
