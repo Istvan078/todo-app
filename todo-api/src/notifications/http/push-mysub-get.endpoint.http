@@ -1,0 +1,7 @@
+GET http://localhost:3001/push/mysub
+Content-Type: application/json
+Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJJc3R2YW4iLCJsYXN0TmFtZSI6IkthbG1hciIsImVtYWlsIjoia2FsbWFyaXN0dmFuMDc4QGdtYWlsLmNvbSIsIl9pZCI6IjY5OGE1OTIwMGI1Mzk5MWQxOGRiMmJmNiIsImlhdCI6MTc3MTM1MTQxMCwiZXhwIjoxNzcxOTU2MjEwfQ.PigII5sUNPlGJRN33UGdtVxQSuWtR-jl5KiHQuJszGc
+
+{
+    "endpoint": "https://fcm.googleapis.com/fcm/send/f7ONkaBYRzA:APA91bG-iePRht8KotpH1ikKh2V8vWlJtUEI5XJcGPovOucsczCa-E8QL1bSt7CEGZM9qZMRNyiHsLdlUUsFlX5vrDzH1ufKiKkyR7WA3zfvTHX6USKhb9jPJV0XmZtHMSJ7ehQNm96b"
+}

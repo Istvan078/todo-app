@@ -6,19 +6,24 @@ import type {
   IPushSubscribeBody,
   IPushUnsubscribeBody,
 } from "@/types/pushNotification.interface";
-import type { ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 
 export function PushSettings(): ReactElement {
   const { data, isLoading, error } = useFetchPubKey();
   const { mutate } = useCreateSub();
   const { mutate: unsubscribe } = useUnsubscribe();
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const isSubscribed = () => {
-    return Notification.permission === "granted";
+  const checkIsSubscribed = async () => {
+    const reg = await navigator.serviceWorker.ready;
+    const subscription = await reg.pushManager.getSubscription();
+    if (!subscription) setIsSubscribed(false);
+    else setIsSubscribed(true);
+    subForPushNotif();
   };
 
   const subForPushNotif = async () => {
-    if (!isSubscribed()) {
+    if (!isSubscribed) {
       const permission = await Notification.requestPermission();
       if (permission !== "granted") throw new Error("Permission not granted");
       const reg = await navigator.serviceWorker.ready;
@@ -35,13 +40,14 @@ export function PushSettings(): ReactElement {
       const reg = await navigator.serviceWorker.ready;
       const subscription = await reg.pushManager.getSubscription();
       if (subscription) {
-        const subEndpoint: IPushUnsubscribeBody = { endpoint: subscription.endpoint };
-        unsubscribe(
-          subEndpoint,
-          {
-            onSuccess: (data) => console.log(data),
+        const subEndpoint: IPushUnsubscribeBody = {
+          endpoint: subscription.endpoint,
+        };
+        unsubscribe(subEndpoint, {
+          onSuccess: (data) => {
+            console.log(data);
           },
-        );
+        });
       }
     }
   };
@@ -53,8 +59,8 @@ export function PushSettings(): ReactElement {
     <div>
       <Switch
         id="subscribeSwitch"
-        checked={isSubscribed()}
-        onCheckedChange={subForPushNotif}
+        checked={isSubscribed}
+        onCheckedChange={checkIsSubscribed}
       ></Switch>
       <label htmlFor="subscribeSwitch" className="ml-2">
         Enable Notifications
