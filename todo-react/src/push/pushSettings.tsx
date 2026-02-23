@@ -35,9 +35,9 @@ export function PushSettings(): ReactElement {
       const reg = await navigator.serviceWorker.ready;
       const subscription = await reg.pushManager.getSubscription();
       if (subscription) {
-        const subEndpoint = subscription.endpoint;
+        const subEndpoint: IPushUnsubscribeBody = { endpoint: subscription.endpoint };
         unsubscribe(
-          { endpoint: subEndpoint },
+          subEndpoint,
           {
             onSuccess: (data) => console.log(data),
           },
