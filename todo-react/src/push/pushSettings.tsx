@@ -6,7 +6,7 @@ import type {
   IPushSubscribeBody,
   IPushUnsubscribeBody,
 } from "@/types/pushNotification.interface";
-import { useState, type ReactElement } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 
 export function PushSettings(): ReactElement {
   const { data, isLoading, error } = useFetchPubKey();
@@ -17,10 +17,15 @@ export function PushSettings(): ReactElement {
   const checkIsSubscribed = async () => {
     const reg = await navigator.serviceWorker.ready;
     const subscription = await reg.pushManager.getSubscription();
-    if (!subscription) setIsSubscribed(false);
+    if (!subscription?.endpoint) setIsSubscribed(false);
     else setIsSubscribed(true);
-    subForPushNotif();
   };
+
+  useEffect(() => {
+    (() => {
+      checkIsSubscribed();
+    })();
+  }, []);
 
   const subForPushNotif = async () => {
     if (!isSubscribed) {
@@ -34,7 +39,10 @@ export function PushSettings(): ReactElement {
       });
       const subBody = subscription.toJSON() as unknown as IPushSubscribeBody;
       mutate(subBody, {
-        onSuccess: (data) => console.log(data),
+        onSuccess: (data) => {
+          console.log(data);
+          setIsSubscribed(true);
+        },
       });
     } else {
       const reg = await navigator.serviceWorker.ready;
@@ -44,8 +52,10 @@ export function PushSettings(): ReactElement {
           endpoint: subscription.endpoint,
         };
         unsubscribe(subEndpoint, {
-          onSuccess: (data) => {
+          onSuccess: async (data) => {
             console.log(data);
+            await subscription.unsubscribe();
+            setIsSubscribed(false);
           },
         });
       }
@@ -60,7 +70,7 @@ export function PushSettings(): ReactElement {
       <Switch
         id="subscribeSwitch"
         checked={isSubscribed}
-        onCheckedChange={checkIsSubscribed}
+        onCheckedChange={subForPushNotif}
       ></Switch>
       <label htmlFor="subscribeSwitch" className="ml-2">
         Enable Notifications
