@@ -15,6 +15,7 @@ import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 import { useQueryClient } from "@tanstack/react-query";
 import { CheckIcon, Pencil, X } from "lucide-react";
 import { useDeleteTask } from "@/hooks/useDeleteTask.hook";
+import { useSendPush } from "@/hooks/useSendPush.hook";
 
 export const Task: FC<ITask & { onEdit: () => void }> = (
   props: ITask & { onEdit: () => void },
@@ -24,6 +25,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
   const [progress, setProgress] = useState(false);
   const { mutate } = useUpdateTask();
   const { mutate: mutateDelete } = useDeleteTask();
+  const { mutate: sendPush } = useSendPush();
   const queryClient = useQueryClient();
 
   const formattedDate = new Date(dueDate).toLocaleDateString("en-GB", {
@@ -49,6 +51,11 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
               queryKey: ["fetchTasks"],
               refetchType: "all",
             });
+            sendPush({
+              title: `Task ${value ? "In Progress" : "Set to To-Do"}`,
+              body: `The task "${title}" is now ${value ? "in progress" : "set to to-do"} at ${new Date().toLocaleTimeString()}`,
+              url: window.location.origin,
+            });
           },
         },
       );
@@ -63,6 +70,11 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
             queryClient.invalidateQueries({
               queryKey: ["fetchTasks"],
               refetchType: "all",
+            });
+            sendPush({
+              title: "Task Completed",
+              body: `The task "${title}" has been completed! at ${new Date().toLocaleTimeString()}`,
+              url: window.location.origin,
             });
           },
         },
