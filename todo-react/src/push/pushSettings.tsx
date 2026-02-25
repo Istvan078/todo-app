@@ -23,19 +23,15 @@ export function PushSettings({
   const { mutate: unsubscribe } = useUnsubscribe();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [endpoint, setEndpoint] = useState("");
-  const { data: exists } = useFetchSub(endpoint);
-  // const queryClient = useQueryClient();
+  const { data: exists } = useFetchSub();
 
   const checkIsSubscribed = async () => {
     const reg = await navigator.serviceWorker.ready;
     const subscription = await reg.pushManager.getSubscription();
     setEndpoint(subscription?.endpoint ?? "");
-    // const data = await queryClient.fetchQuery({
-    //   queryKey: ["fetchSub", endpoint],
-    //   queryFn: () => fetchSub(endpoint || ""),
-    // });
 
     console.log("fetchSub data:", exists);
+    console.log("Current subscription endpoint:", endpoint);
 
     if (!subscription?.endpoint) setIsSubscribed(false);
     else setIsSubscribed(true);
@@ -59,7 +55,7 @@ export function PushSettings({
         );
       }
     })();
-  }, [isLoggedOut, endpoint]);
+  }, [isLoggedOut]);
 
   const subForPushNotif = async () => {
     if (!isSubscribed) {

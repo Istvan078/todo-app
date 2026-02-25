@@ -1,13 +1,12 @@
 import { setHeaders } from "@/headers/auth.header";
 import { useQuery } from "@tanstack/react-query";
 
-const fetchSub = async (endpoint: string) => {
+const fetchSub = async () => {
   const headers = setHeaders();
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}push/mysub`, {
-      method: "POST",
+      method: "GET",
       headers: headers,
-      body: JSON.stringify({ endpoint }),
     });
     const data = await response.json();
     console.log(data);
@@ -17,10 +16,9 @@ const fetchSub = async (endpoint: string) => {
   }
 };
 
-export function useFetchSub(endpoint: string) {
+export function useFetchSub() {
   return useQuery({
-    queryKey: ["fetchSub", endpoint],
-    queryFn: () => fetchSub(endpoint),
-    enabled: !!endpoint, // Only run the query if endpoint is not empty
+    queryKey: ["fetchSub"],
+    queryFn: fetchSub,
   });
 }
