@@ -23,14 +23,14 @@ export function PushSettings({
   const { mutate: unsubscribe } = useUnsubscribe();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [endpoint, setEndpoint] = useState("");
-  const { data: exists } = useFetchSub(endpoint);
+  const { data: subExists } = useFetchSub(endpoint);
 
   const checkIsSubscribed = async () => {
     const reg = await navigator.serviceWorker.ready;
     const subscription = await reg.pushManager.getSubscription();
     setEndpoint(subscription?.endpoint ?? "");
 
-    console.log("fetchSub data:", exists);
+    console.log("fetchSub data:", subExists);
     console.log("Current subscription endpoint:", endpoint);
 
     if (!subscription?.endpoint) setIsSubscribed(false);
@@ -38,6 +38,7 @@ export function PushSettings({
   };
 
   useEffect(() => {
+    console.log(endpoint, subExists);
     (async () => {
       checkIsSubscribed();
       if (isLoggedOut) {
@@ -55,7 +56,7 @@ export function PushSettings({
         );
       }
     })();
-  }, [isLoggedOut]);
+  }, [isLoggedOut, endpoint, subExists]);
 
   const subForPushNotif = async () => {
     if (!isSubscribed) {
