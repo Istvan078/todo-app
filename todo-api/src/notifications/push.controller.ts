@@ -35,7 +35,6 @@ export class PushController {
       matchedData(req);
     const userId = (req as any).user
       ?._id as Schema.Types.ObjectId;
-
     try {
       const savedSubMsg =
         await this.pushService.saveSubscription(

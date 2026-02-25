@@ -1,12 +1,12 @@
 POST http://localhost:3001/push/subscribe
 Content-Type: application/json
-Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJJc3R2YW4iLCJsYXN0TmFtZSI6IkthbG1hciIsImVtYWlsIjoia2FsbWFyaXN0dmFuMDc4QGdtYWlsLmNvbSIsIl9pZCI6IjY5OGE1OTIwMGI1Mzk5MWQxOGRiMmJmNiIsImlhdCI6MTc3MTM1MTQxMCwiZXhwIjoxNzcxOTU2MjEwfQ.PigII5sUNPlGJRN33UGdtVxQSuWtR-jl5KiHQuJszGc
+Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJJc3R2YW4iLCJsYXN0TmFtZSI6IkthbG1hciIsImVtYWlsIjoia2FsbWFyaXN0dmFuMDc4QGdtYWlsLmNvbSIsIl9pZCI6IjY5OGE1OTIwMGI1Mzk5MWQxOGRiMmJmNiIsImlhdCI6MTc3MjA0MjA3OCwiZXhwIjoxNzcyNjQ2ODc4fQ.KdQCV5pqOL9L94SqITRJVy8M_MJufkYonoqhB51GRhg
 
 {
-    "endpoint": "https://fcm.googleapis.com/fcm/send/dgTdoqIYf2Q:APA91bFtdJgLUaQZZVmrCliNjAIU0q3lioWjhUIeHLu2QwHdPFPKRJxnRhMXWdq0pObqCDmb-tR8DssoPEfgf4kny6orvyhMuFkgHcK3lVete0YuL4u977cIvgJA0dN9p1qTowO5PeL6",
+    "endpoint": "https://fcm.googleapis.com/fcm/send/dMTaXprcWcA:APA91bHR6_s0lvuTsS_mjilc43BqyDoqWLY92nqEb3uhJrQ_y7IF9G659mH6WuMmbuxQz0_KP5-_G8Es19OwY40-4arTpDZMfF2O-ZfIHI15ALeOBMUdU-gOxSpmK_tSo-EI6Up4b3AX",
     "expirationTime": null,
     "keys": {
-        "p256dh": "BJ3Vu4FgUoZRTIy8CXNs0XSvbuvXGVGHd6Tdz2pVacAZPQzl02qOBxyQZoIXAVu6KlQ-TbX4VENU6rCKxgcyYIs",
-        "auth": "2UPdXn3VABc5iHPSnCD_Tg"
+        "p256dh": "BD9m618ysuWxPR_qPrePfsDWFBl3Blw8hbG8tKJrw-fG90dq7Jbm_4q_fr3_kS9MTvP_pfve6x3DB5i8PLRc5BE",
+        "auth": "C-vnHuQ5ockFyWZPSHxCTw"
     }
 }

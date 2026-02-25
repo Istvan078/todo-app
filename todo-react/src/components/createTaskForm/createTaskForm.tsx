@@ -57,6 +57,7 @@ export const CreateTaskForm = ({
   const { mutate: sendPush } = useSendPush();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
 
   function onSubmit(values: z.infer<typeof CreateTaskSchema>) {
     const dueDate = values.dueDate.toISOString();
@@ -204,7 +205,10 @@ export const CreateTaskForm = ({
               name="dueDate"
               render={({ field }) => (
                 <FormItem>
-                  <Popover>
+                  <Popover
+                    open={isDatePopoverOpen}
+                    onOpenChange={setIsDatePopoverOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -224,9 +228,15 @@ export const CreateTaskForm = ({
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
+                        animate={true}
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          if (date) {
+                            setIsDatePopoverOpen(false);
+                          }
+                        }}
                         initialFocus
                         // Disable past dates
                         disabled={(date) =>

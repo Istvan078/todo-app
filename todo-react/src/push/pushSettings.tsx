@@ -74,7 +74,7 @@ export function PushSettings(): ReactElement {
         className="data-[state=checked]:!bg-purple-700 data-[state=unchecked]:!bg-gray-700"
       ></Switch>
       <label htmlFor="subscribeSwitch" className="ml-2">
-        Enable Notifications
+        {isSubscribed ? "Disable Notifications" : "Enable Notifications"}
       </label>
     </div>
   );

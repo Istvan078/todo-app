@@ -21,8 +21,8 @@ const loginUser = async (userCreds: LoginCreds) => {
 export function useLoginUser() {
   return useMutation({
     mutationFn: loginUser,
-    onSuccess: (response) => {
-      console.log("Login successful:", response);
+    onSuccess: () => {
+      console.log("Login successful");
     },
     onError: (error) => {
       console.error(error);
