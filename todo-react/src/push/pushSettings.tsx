@@ -27,9 +27,14 @@ export function PushSettings({
   const checkIsSubscribed = async () => {
     const reg = await navigator.serviceWorker.ready;
     const subscription = await reg.pushManager.getSubscription();
-    const data = queryClient.getQueriesData({
+    // await queryClient.invalidateQueries({
+    //   queryKey: ["fetchSub", subscription?.endpoint],
+    //   refetchType: "all",
+    // });
+    const data = await queryClient.fetchQuery({
       queryKey: ["fetchSub", subscription?.endpoint],
     });
+
     console.log(data);
     if (!subscription?.endpoint) setIsSubscribed(false);
     else setIsSubscribed(true);
