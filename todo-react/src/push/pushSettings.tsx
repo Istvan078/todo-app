@@ -1,7 +1,6 @@
 import { Switch } from "@/components/ui/switch";
 import { useCreateSub } from "@/hooks/useCreateSub.hook";
 import { useFetchPubKey } from "@/hooks/useFetchPubKey.hook";
-import { useFetchSub } from "@/hooks/useGetSub.hook";
 import { useUnsubscribe } from "@/hooks/useUnsubscribe.hook";
 import type {
   IPushSubscribeBody,
