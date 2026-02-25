@@ -6,6 +6,7 @@ import type {
   IPushSubscribeBody,
   IPushUnsubscribeBody,
 } from "@/types/pushNotification.interface";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState, type ReactElement } from "react";
 
 type PushSettingsProps = {
@@ -21,10 +22,15 @@ export function PushSettings({
   const { mutate } = useCreateSub();
   const { mutate: unsubscribe } = useUnsubscribe();
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const queryClient = useQueryClient();
 
   const checkIsSubscribed = async () => {
     const reg = await navigator.serviceWorker.ready;
     const subscription = await reg.pushManager.getSubscription();
+    const data = queryClient.getQueriesData({
+      queryKey: ["fetchSub", subscription?.endpoint],
+    });
+    console.log(data);
     if (!subscription?.endpoint) setIsSubscribed(false);
     else setIsSubscribed(true);
   };

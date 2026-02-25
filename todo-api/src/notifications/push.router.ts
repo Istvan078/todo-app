@@ -50,6 +50,27 @@ export class PushRouter {
       },
     );
 
+    // GET /subscription - Check if a subscription exists for the user
+    this.router.get(
+      '/mysub',
+      unsubscribeValidator,
+      async (req: Request, res: Response) => {
+        const result = validationResult(req);
+        if (result.isEmpty()) {
+          const exists =
+            await this.pushController.getSubscription(
+              req,
+              res,
+            );
+          return res.status(StatusCodes.OK).json(exists);
+        } else {
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(result.array());
+        }
+      },
+    );
+
     // Unsubscribe notifications
     this.router.post(
       '/unsubscribe',

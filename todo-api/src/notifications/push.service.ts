@@ -83,6 +83,19 @@ export class PushService {
     );
   }
 
+  // Get subscription by user ID and endpoint and return true if exists, else false
+  async getSubscriptionByUserId(
+    endpoint: string,
+    userId: mongoose.Schema.Types.ObjectId,
+  ) {
+    const exists = await this.pushModel.exists({
+      userId,
+      'subscriptions.endpoint': endpoint,
+    });
+    if (exists) return true;
+    return false;
+  }
+
   async sendPushToSubscription(
     sub: webpush.PushSubscription,
     payload: PushPayload,
