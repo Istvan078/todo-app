@@ -20,6 +20,7 @@ const fetchSub = async (endpoint: string) => {
 export function useFetchSub(endpoint: string) {
   return useQuery({
     queryKey: ["fetchSub", endpoint],
-    queryFn: () => fetchSub(endpoint),
+    queryFn: async () => await fetchSub(endpoint),
+    enabled: !!endpoint, // Only run the query if endpoint is not empty
   });
 }

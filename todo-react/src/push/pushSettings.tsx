@@ -1,12 +1,12 @@
 import { Switch } from "@/components/ui/switch";
 import { useCreateSub } from "@/hooks/useCreateSub.hook";
 import { useFetchPubKey } from "@/hooks/useFetchPubKey.hook";
+import { useFetchSub } from "@/hooks/useGetSub.hook";
 import { useUnsubscribe } from "@/hooks/useUnsubscribe.hook";
 import type {
   IPushSubscribeBody,
   IPushUnsubscribeBody,
 } from "@/types/pushNotification.interface";
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState, type ReactElement } from "react";
 
 type PushSettingsProps = {
@@ -22,21 +22,20 @@ export function PushSettings({
   const { mutate } = useCreateSub();
   const { mutate: unsubscribe } = useUnsubscribe();
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const queryClient = useQueryClient();
+  const [endpoint, setEndpoint] = useState("");
+  const { data: exists } = useFetchSub(endpoint);
+  // const queryClient = useQueryClient();
 
   const checkIsSubscribed = async () => {
     const reg = await navigator.serviceWorker.ready;
     const subscription = await reg.pushManager.getSubscription();
-    // await queryClient.invalidateQueries({
-    //   queryKey: ["fetchSub", subscription?.endpoint],
-    //   refetchType: "all",
+    setEndpoint(subscription?.endpoint ?? "");
+    // const data = await queryClient.fetchQuery({
+    //   queryKey: ["fetchSub", endpoint],
+    //   queryFn: () => fetchSub(endpoint || ""),
     // });
-    await queryClient.invalidateQueries({
-      queryKey: ["fetchSub", subscription?.endpoint],
-    });
-    const data: any =
-      queryClient.getQueryData(["fetchSub", subscription?.endpoint]) || {};
-    console.log(data);
+
+    console.log("fetchSub data:", exists);
 
     if (!subscription?.endpoint) setIsSubscribed(false);
     else setIsSubscribed(true);
