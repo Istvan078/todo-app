@@ -29,11 +29,8 @@ export function PushSettings({
     const reg = await navigator.serviceWorker.ready;
     const subscription = await reg.pushManager.getSubscription();
     setEndpoint(subscription?.endpoint ?? "");
-
-    console.log("fetchSub data:", subExists?.data?.exists);
-    console.log("Current subscription endpoint:", endpoint);
-
-    if (!subscription?.endpoint) setIsSubscribed(false);
+    const isSubExists = subExists?.data?.exists;
+    if (!isSubExists) setIsSubscribed(false);
     else setIsSubscribed(true);
   };
 
@@ -46,10 +43,9 @@ export function PushSettings({
         unsubscribe(
           { endpoint: subscription?.endpoint || "" },
           {
-            onSuccess: async (data) => {
+            onSuccess: async () => {
               setIsSubscribed(false);
               onUnsubscribed(true);
-              console.log(data);
             },
           },
         );
@@ -69,8 +65,7 @@ export function PushSettings({
       });
       const subBody = subscription.toJSON() as unknown as IPushSubscribeBody;
       mutate(subBody, {
-        onSuccess: (data) => {
-          console.log(data);
+        onSuccess: () => {
           setIsSubscribed(true);
         },
       });
@@ -82,8 +77,7 @@ export function PushSettings({
           endpoint: subscription.endpoint,
         };
         unsubscribe(subEndpoint, {
-          onSuccess: async (data) => {
-            console.log(data);
+          onSuccess: async () => {
             await subscription.unsubscribe();
             setIsSubscribed(false);
           },
