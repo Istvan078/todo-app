@@ -1,6 +1,7 @@
 import { Switch } from "@/components/ui/switch";
 import { useCreateSub } from "@/hooks/useCreateSub.hook";
 import { useFetchPubKey } from "@/hooks/useFetchPubKey.hook";
+import { useFetchSub } from "@/hooks/useGetSub.hook";
 import { useUnsubscribe } from "@/hooks/useUnsubscribe.hook";
 import type {
   IPushSubscribeBody,
@@ -31,11 +32,13 @@ export function PushSettings({
     //   queryKey: ["fetchSub", subscription?.endpoint],
     //   refetchType: "all",
     // });
-    const data = await queryClient.fetchQuery({
+    await queryClient.invalidateQueries({
       queryKey: ["fetchSub", subscription?.endpoint],
     });
-
+    const data: any =
+      queryClient.getQueryData(["fetchSub", subscription?.endpoint]) || {};
     console.log(data);
+
     if (!subscription?.endpoint) setIsSubscribed(false);
     else setIsSubscribed(true);
   };
