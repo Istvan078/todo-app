@@ -8,11 +8,15 @@ import type {
 } from "@/types/pushNotification.interface";
 import { useEffect, useState, type ReactElement } from "react";
 
+type PushSettingsProps = {
+  isLoggedOut: boolean;
+  onUnsubscribed: (isUnsubscribed: boolean) => void;
+};
+
 export function PushSettings({
   isLoggedOut,
-}: {
-  isLoggedOut: boolean;
-}): ReactElement {
+  onUnsubscribed,
+}: PushSettingsProps): ReactElement {
   const { data, isLoading, error } = useFetchPubKey();
   const { mutate } = useCreateSub();
   const { mutate: unsubscribe } = useUnsubscribe();
@@ -36,6 +40,7 @@ export function PushSettings({
           {
             onSuccess: async (data) => {
               setIsSubscribed(false);
+              onUnsubscribed(true);
               console.log(data);
             },
           },
