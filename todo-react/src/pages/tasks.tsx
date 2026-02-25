@@ -31,6 +31,7 @@ export const Tasks: FC = (): ReactElement => {
     undefined,
   );
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -59,6 +60,7 @@ export const Tasks: FC = (): ReactElement => {
   }
 
   function logout() {
+    setIsLoggedOut(true);
     localStorage.removeItem("token");
     navigate("/login", { replace: true });
   }
@@ -77,7 +79,7 @@ export const Tasks: FC = (): ReactElement => {
         <section className="sm:flex sm:flex-row w-full p-1 sm:p-4 gap-8 grid">
           <section className="sm:flex sm:basis-2/3 justify-center">
             <div className="flex flex-col sm:w-4/5 p-4">
-              <PushSettings></PushSettings>
+              <PushSettings isLoggedOut={isLoggedOut}></PushSettings>
               <h1 className="text-white font-bold text-2xl mt-3 mb-3">
                 {`Task as on: ${todaysDate()}`}
               </h1>

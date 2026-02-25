@@ -8,7 +8,11 @@ import type {
 } from "@/types/pushNotification.interface";
 import { useEffect, useState, type ReactElement } from "react";
 
-export function PushSettings(): ReactElement {
+export function PushSettings({
+  isLoggedOut,
+}: {
+  isLoggedOut: boolean;
+}): ReactElement {
   const { data, isLoading, error } = useFetchPubKey();
   const { mutate } = useCreateSub();
   const { mutate: unsubscribe } = useUnsubscribe();
@@ -22,10 +26,23 @@ export function PushSettings(): ReactElement {
   };
 
   useEffect(() => {
-    (() => {
+    (async () => {
       checkIsSubscribed();
+      if (isLoggedOut) {
+        const reg = await navigator.serviceWorker.ready;
+        const subscription = await reg.pushManager.getSubscription();
+        unsubscribe(
+          { endpoint: subscription?.endpoint || "" },
+          {
+            onSuccess: async (data) => {
+              setIsSubscribed(false);
+              console.log(data);
+            },
+          },
+        );
+      }
     })();
-  }, []);
+  }, [isLoggedOut]);
 
   const subForPushNotif = async () => {
     if (!isSubscribed) {
