@@ -95,7 +95,7 @@ export function PushSettings({
         id="subscribeSwitch"
         checked={isSubscribed}
         onCheckedChange={subForPushNotif}
-        className="data-[state=checked]:!bg-purple-700 data-[state=unchecked]:!bg-gray-700"
+        className="data-[state=checked]:!bg-purple-800 data-[state=unchecked]:!bg-gray-700"
       ></Switch>
       <label htmlFor="subscribeSwitch" className="ml-2">
         {isSubscribed ? "Disable Notifications" : "Enable Notifications"}
