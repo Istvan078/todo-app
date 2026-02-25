@@ -9,7 +9,9 @@ const fetchSub = async (endpoint: string) => {
       headers: headers,
       body: JSON.stringify({ endpoint }),
     });
-    return await response.json();
+    const data = await response.json();
+    console.log(data);
+    return data;
   } catch (error) {
     console.log(error);
   }
