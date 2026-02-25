@@ -30,7 +30,7 @@ export function PushSettings({
     const subscription = await reg.pushManager.getSubscription();
     setEndpoint(subscription?.endpoint ?? "");
 
-    console.log("fetchSub data:", subExists);
+    console.log("fetchSub data:", subExists?.data?.exists);
     console.log("Current subscription endpoint:", endpoint);
 
     if (!subscription?.endpoint) setIsSubscribed(false);
@@ -38,7 +38,6 @@ export function PushSettings({
   };
 
   useEffect(() => {
-    console.log(endpoint, subExists);
     (async () => {
       checkIsSubscribed();
       if (isLoggedOut) {
