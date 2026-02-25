@@ -59,7 +59,7 @@ export function PushSettings({
         );
       }
     })();
-  }, [isLoggedOut]);
+  }, [isLoggedOut, endpoint]);
 
   const subForPushNotif = async () => {
     if (!isSubscribed) {
