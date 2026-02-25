@@ -23,7 +23,7 @@ export function PushSettings({
   const { mutate: unsubscribe } = useUnsubscribe();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [endpoint, setEndpoint] = useState("");
-  const { data: exists } = useFetchSub();
+  const { data: exists } = useFetchSub(endpoint);
 
   const checkIsSubscribed = async () => {
     const reg = await navigator.serviceWorker.ready;

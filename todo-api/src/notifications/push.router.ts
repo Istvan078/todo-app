@@ -50,8 +50,8 @@ export class PushRouter {
       },
     );
 
-    // GET /subscription - Check if a subscription exists for the user
-    this.router.get(
+    // POST /subscription - Check if a subscription exists for the user
+    this.router.post(
       '/mysub',
       unsubscribeValidator,
       async (req: Request, res: Response) => {
