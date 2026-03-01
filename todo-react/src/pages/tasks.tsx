@@ -93,7 +93,12 @@ export const Tasks: FC = (): ReactElement => {
                 {`Task as on: ${todaysDate()}`}
               </h1>
               <div className="flex justify-around mb-5 sm:mb-12">
-                <div onClick={setShowCompletedTasks.bind(null, false)}>
+                <div
+                  onClick={() => {
+                    setShowCompletedTasks(false);
+                    setShowInProgressTasks(false);
+                  }}
+                >
                   <TasksCounter
                     status="todo"
                     count={
@@ -101,10 +106,15 @@ export const Tasks: FC = (): ReactElement => {
                         ? (data.meta.todoTasks as number)
                         : 0
                     }
-                    isActive={!showCompletedTasks}
+                    isActive={!showCompletedTasks && !showInProgressTasks}
                   ></TasksCounter>
                 </div>
-                <div onClick={setShowInProgressTasks.bind(null, true)}>
+                <div
+                  onClick={() => {
+                    setShowCompletedTasks(false);
+                    setShowInProgressTasks(true);
+                  }}
+                >
                   <TasksCounter
                     status="inProgress"
                     count={
@@ -116,7 +126,12 @@ export const Tasks: FC = (): ReactElement => {
                   ></TasksCounter>
                 </div>
 
-                <div onClick={setShowCompletedTasks.bind(null, true)}>
+                <div
+                  onClick={() => {
+                    setShowCompletedTasks(true);
+                    setShowInProgressTasks(false);
+                  }}
+                >
                   <TasksCounter
                     status="completed"
                     count={
@@ -139,6 +154,7 @@ export const Tasks: FC = (): ReactElement => {
               </div>
               {data?.data &&
                 !showCompletedTasks &&
+                !showInProgressTasks &&
                 Array.isArray(data.data.todo) &&
                 data.data.todo.every(
                   (item: any): item is ITask =>
