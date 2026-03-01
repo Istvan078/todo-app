@@ -54,7 +54,13 @@ export class GetTasksProvider {
     pagination: Partial<ITaskPagination> = { order: 'asc' },
     userId: Schema.Types.ObjectId,
   ): Promise<{
-    data: ITask[] |{ todo: ITask[]; completed: ITask[] };
+    data:
+      | ITask[]
+      | {
+          todo: ITask[];
+          completed: ITask[];
+          inProgress: ITask[];
+        };
     meta: {};
   }> {
     const tasks: any =
@@ -69,24 +75,27 @@ export class GetTasksProvider {
         : a.dueDate.getTime() - b.dueDate.getTime(),
     );
 
-    const totalTasks = tasks.tasks?.length;
-    const completedTasks = tasks.completedTasks?.length;
-    const todoTasks = tasks.tasks.filter(
+    const totalTasksCount = tasks.tasks?.length;
+    const completedTasksCount =
+      tasks.completedTasks?.length;
+    const todoTasksCount = tasks.tasks.filter(
       (t: any) => t.status === 'todo',
     )?.length;
     const inProgressTasks = tasks.tasks.filter(
       (t: any) => t.status === 'inProgress',
-    )?.length;
+    );
+    const inProgressTasksCount = inProgressTasks?.length;
     return {
       data: {
         todo: tasks.tasks,
         completed: tasks.completedTasks,
+        inProgress: inProgressTasks,
       },
       meta: {
-        totalTasks,
-        completedTasks,
-        todoTasks,
-        inProgressTasks,
+        totalTasks: totalTasksCount,
+        completedTasks: completedTasksCount,
+        todoTasks: todoTasksCount,
+        inProgressTasks: inProgressTasksCount,
       },
     };
   }

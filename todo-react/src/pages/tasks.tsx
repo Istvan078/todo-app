@@ -31,6 +31,7 @@ export const Tasks: FC = (): ReactElement => {
     undefined,
   );
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  const [showInProgressTasks, setShowInProgressTasks] = useState(false);
   const [isLoggedOut, setIsLoggedOut] = useState(false);
 
   const navigate = useNavigate();
@@ -103,15 +104,17 @@ export const Tasks: FC = (): ReactElement => {
                     isActive={!showCompletedTasks}
                   ></TasksCounter>
                 </div>
-                <TasksCounter
-                  status="inProgress"
-                  count={
-                    data && data.meta && "inProgressTasks" in data.meta
-                      ? (data.meta.inProgressTasks as number)
-                      : 0
-                  }
-                  isActive={false}
-                ></TasksCounter>
+                <div onClick={setShowInProgressTasks.bind(null, true)}>
+                  <TasksCounter
+                    status="inProgress"
+                    count={
+                      data && data.meta && "inProgressTasks" in data.meta
+                        ? (data.meta.inProgressTasks as number)
+                        : 0
+                    }
+                    isActive={showInProgressTasks}
+                  ></TasksCounter>
+                </div>
 
                 <div onClick={setShowCompletedTasks.bind(null, true)}>
                   <TasksCounter
@@ -170,6 +173,30 @@ export const Tasks: FC = (): ReactElement => {
                     "dueDate" in item,
                 ) &&
                 data.data.completed.map((task: any) => (
+                  <Task
+                    key={task._id}
+                    _id={task._id}
+                    title={task.title}
+                    description={task.description}
+                    status={task.status}
+                    priority={task.priority}
+                    dueDate={task.dueDate}
+                    onEdit={() => openEditTask(task)}
+                  ></Task>
+                ))}
+
+              {data?.data &&
+                showInProgressTasks &&
+                Array.isArray(data.data.inProgress) &&
+                data.data.inProgress.every(
+                  (item: any): item is ITask =>
+                    "_id" in item &&
+                    "title" in item &&
+                    "status" in item &&
+                    "priority" in item &&
+                    "dueDate" in item,
+                ) &&
+                data.data.inProgress.map((task: any) => (
                   <Task
                     key={task._id}
                     _id={task._id}
