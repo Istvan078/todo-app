@@ -48,22 +48,19 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     if (_id) {
       formData.set("status", value ? "inProgress" : "todo");
     }
-    mutate(
-      { formData },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["fetchTasks"],
-            refetchType: "all",
-          });
-          sendPush({
-            title: `Task ${value ? "In Progress" : "Set to To-Do"}`,
-            body: `The task "${title}" is now ${value ? "in progress" : "set to to-do"} at ${new Date().toLocaleTimeString()}`,
-            url: window.location.origin,
-          });
-        },
+    mutate(formData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchTasks"],
+          refetchType: "all",
+        });
+        sendPush({
+          title: `Task ${value ? "In Progress" : "Set to To-Do"}`,
+          body: `The task "${title}" is now ${value ? "in progress" : "set to to-do"} at ${new Date().toLocaleTimeString()}`,
+          url: window.location.origin,
+        });
       },
-    );
+    });
   }
 
   function handleTaskCompleted() {
@@ -71,7 +68,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
       formData.set("status", "completed");
     }
     mutate(
-      { formData },
+       formData,
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
