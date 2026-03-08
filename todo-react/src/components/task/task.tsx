@@ -13,9 +13,11 @@ import { Button } from "@/components/ui/button";
 import type { ITask } from "@/types/task.interface";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckIcon, Pencil, X } from "lucide-react";
+import { CheckIcon, Pencil, X, XIcon } from "lucide-react";
 import { useDeleteTask } from "@/hooks/useDeleteTask.hook";
 import { useSendPush } from "@/hooks/useSendPush.hook";
+import { useDeleteTaskImage } from "@/hooks/useDeleteTaskImage.hook";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Task: FC<ITask & { onEdit: () => void }> = (
   props: ITask & { onEdit: () => void },
@@ -28,8 +30,10 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
   const [progress, setProgress] = useState(false);
   const { mutate } = useUpdateTask();
   const { mutate: mutateDelete } = useDeleteTask();
+  const { mutate: deleteTaskImage } = useDeleteTaskImage();
   const { mutate: sendPush } = useSendPush();
   const queryClient = useQueryClient();
+  const [isLoading, setLoading] = useState(false);
 
   const formattedDate = new Date(dueDate).toLocaleDateString("en-GB", {
     day: "numeric",
@@ -67,22 +71,19 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     if (_id) {
       formData.set("status", "completed");
     }
-    mutate(
-       formData,
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["fetchTasks"],
-            refetchType: "all",
-          });
-          sendPush({
-            title: "Task Completed",
-            body: `The task "${title}" has been completed! at ${new Date().toLocaleTimeString()}`,
-            url: window.location.origin,
-          });
-        },
+    mutate(formData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchTasks"],
+          refetchType: "all",
+        });
+        sendPush({
+          title: "Task Completed",
+          body: `The task "${title}" has been completed! at ${new Date().toLocaleTimeString()}`,
+          url: window.location.origin,
+        });
       },
-    );
+    });
   }
 
   function handleTaskDeleted() {
@@ -98,6 +99,24 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           },
         },
       );
+  }
+
+  function handleDeleteTaskImage() {
+    if (_id) {
+      setLoading(true);
+      deleteTaskImage(
+        { _id: _id },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["fetchTasks"],
+              refetchType: "all",
+            });
+            setLoading(false);
+          },
+        },
+      );
+    }
   }
 
   return (
@@ -150,7 +169,24 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
       <CardContent className="px-3">
         <p>{description}</p>
         {imageUrl && (
-          <img width="100%" height="auto" src={imageUrl} alt={title} />
+          <div className="grid grid-cols-4 grid-rows-1">
+            <img
+              className="col-start-1 col-end-5 row-start-1 row-end-2 object-cover rounded-md"
+              width="100%"
+              height="auto"
+              src={imageUrl}
+              alt={title}
+            />
+            {isLoading && (
+              <Spinner className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-2 mt-2"></Spinner>
+            )}
+            {!isLoading && (
+              <XIcon
+                onClick={handleDeleteTaskImage}
+                className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-1 mt-1 cursor-pointer"
+              ></XIcon>
+            )}
+          </div>
         )}
       </CardContent>
       <CardFooter

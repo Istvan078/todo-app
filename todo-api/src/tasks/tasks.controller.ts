@@ -12,6 +12,7 @@ import { matchedData } from 'express-validator';
 import { ITaskPagination } from './interfaces/taskPagination.interface';
 import { GetTasksProvider } from './providers/getTasks.provider';
 import { DeleteTaskProvider } from './providers/deleteTask.provider';
+import { DeleteImageProvider } from './providers/deleteImage.provider';
 
 @injectable()
 export class TasksController {
@@ -26,6 +27,8 @@ export class TasksController {
     private updateTaskProvider: UpdateTaskProvider,
     @inject(DeleteTaskProvider)
     private deleteTaskProvider: DeleteTaskProvider,
+    @inject(DeleteImageProvider)
+    private deleteImageProvider: DeleteImageProvider,
   ) {}
 
   public async handleGetTasks(req: Request, res: Response) {
@@ -94,6 +97,20 @@ export class TasksController {
     const validatedData: { _id: string } = matchedData(req);
     try {
       return await this.deleteTaskProvider.deleteTask(
+        validatedData._id,
+      );
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+
+  public async handleDeleteImage(
+    req: Request<{}, {}, { _id: string }>,
+    res: Response,
+  ) {
+    const validatedData: { _id: string } = matchedData(req);
+    try {
+      return await this.deleteImageProvider.deleteImage(
         validatedData._id,
       );
     } catch (err: any) {

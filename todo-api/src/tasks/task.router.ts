@@ -125,5 +125,28 @@ export class TasksRouter {
         }
       },
     );
+
+    this.router.delete(
+      '/delete-image',
+      deleteTaskValidator,
+      async (
+        req: Request<{}, {}, { _id: string }>,
+        res: Response,
+      ) => {
+        const result = validationResult(req);
+        if (result.isEmpty()) {
+          const updatedTask =
+            await this.tasksController.handleDeleteImage(
+              req,
+              res,
+            );
+          res.status(StatusCodes.OK).json(updatedTask);
+        } else {
+          res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(result.array());
+        }
+      },
+    );
   }
 }

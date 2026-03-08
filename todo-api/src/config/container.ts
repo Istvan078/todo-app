@@ -11,6 +11,7 @@ import { UsersService } from '../users/users.service';
 import { PushService } from '../notifications/push.service';
 import { PushRouter } from '../notifications/push.router';
 import { PushController } from '../notifications/push.controller';
+import { DeleteImageProvider } from '../tasks/providers/deleteImage.provider';
 
 export const container: Container = new Container();
 
@@ -29,6 +30,10 @@ container
   .inTransientScope();
 container
   .bind(DeleteTaskProvider)
+  .toSelf()
+  .inTransientScope();
+container
+  .bind(DeleteImageProvider)
   .toSelf()
   .inTransientScope();
 

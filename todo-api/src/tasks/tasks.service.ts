@@ -103,9 +103,12 @@ export class TasksService {
     return await this.taskModel.countDocuments(filter);
   }
 
-  public deleteTask(_id: string) {
-    return this.taskModel.deleteOne({
-      _id: _id,
-    });
+  public async deleteTask(_id: string) {
+    const task = await this.taskModel.findOne({ _id: _id });
+    // If the task has an associated image, delete it from Cloudinary
+    if (task?.imagePublicId) {
+      await cloudinary.uploader.destroy(task.imagePublicId);
+    }
+    return task?.deleteOne();
   }
 }
