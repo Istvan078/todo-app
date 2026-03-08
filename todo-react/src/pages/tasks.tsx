@@ -82,9 +82,9 @@ export const Tasks: FC = (): ReactElement => {
         </div>
       )}
       {data && (
-        <section className="md:flex md:flex-row w-full p-1 md:p-4 gap-8 grid">
-          <section className="md:flex md:basis-2/3 justify-center">
-            <div className="flex flex-col md:w-4/5 p-4">
+        <section className="lg:flex lg:flex-row w-full p-1 lg:p-4 gap-8 grid">
+          <section className="lg:flex lg:basis-2/3 justify-center">
+            <div className="flex flex-col lg:w-4/5 p-4">
               <PushSettings
                 onUnsubscribed={handlePushUnsubscribed}
                 isLoggedOut={isLoggedOut}
