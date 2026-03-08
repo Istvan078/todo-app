@@ -49,4 +49,16 @@ export const updateTaskValidator = checkSchema({
     isISO8601: true,
     optional: true,
   },
+  imageUrl: {
+    in: ['body'],
+    optional: true,
+    isURL: true,
+    errorMessage: 'The image URL must be a valid URL',
+  },
+  imagePublicId: {
+    in: ['body'],
+    optional: true,
+    isString: true,
+    errorMessage: 'The image public ID must be a string',
+  },
 });

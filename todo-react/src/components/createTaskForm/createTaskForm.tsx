@@ -61,9 +61,8 @@ export const CreateTaskForm = ({
   const imageInputId = useId();
 
   function onSubmit(values: z.infer<typeof CreateTaskSchema>) {
-    // const dueDate = values.dueDate.toISOString();
-
     const formData = new FormData();
+
     formData.append("title", values.title);
     formData.append("description", values.description);
     formData.append("status", values.status);

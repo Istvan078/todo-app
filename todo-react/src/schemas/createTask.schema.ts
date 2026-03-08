@@ -2,18 +2,32 @@ import { z } from "zod";
 
 // VALIDATION
 export const CreateTaskSchema = z.object({
-  title: z.string().max(80, { message: "Title must be less than 80 chars" }),
+  title: z
+    .string({
+      error: (issue) => {
+        if (issue.input === undefined) return "Title is required";
+      },
+    })
+    .min(2, { error: "Title has to be at least 2 characters" })
+    .max(80, { error: "Title must be less than 80 characters" }),
   dueDate: z.date({
     error: "Due date is mandatory",
   }),
-  description: z.string().max(5000, {
-    message: "The description cannot be more then 5000 characters",
-  }),
+  description: z
+    .string({
+      error: (issue) => {
+        if (issue.input === undefined) return "Description is required";
+      },
+    })
+    .min(2, { error: "Description has to be at least 2 characters" })
+    .max(5000, {
+      error: "The description cannot be more then 5000 characters",
+    }),
   status: z.enum(["todo", "inProgress", "completed"], {
-    message: "Status is required",
+    error: "Status is required",
   }),
   priority: z.enum(["low", "normal", "high"], {
-    message: "Priority is required",
+    error: "Priority is required",
   }),
   image: z.instanceof(File).optional(),
 });

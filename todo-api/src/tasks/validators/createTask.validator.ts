@@ -11,16 +11,23 @@ export const createTaskValidator = checkSchema({
     isLength: {
       options: {
         max: 80,
-        min: 3,
+        min: 1,
       },
       errorMessage:
-        'Title has to be minimum 3, maximum 80 characters',
+        'Title has to be minimum 1, maximum 80 characters',
     },
     trim: true,
   },
   description: {
     // where to validate, query or body
     in: ['body'],
+    isLength: {
+      options: {
+        max: 5000,
+      },
+      errorMessage:
+        'The description cannot be more then 5000 characters',
+    },
     notEmpty: true,
     isString: true,
     trim: true,

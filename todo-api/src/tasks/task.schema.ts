@@ -6,6 +6,10 @@ const taskSchema: Schema<ITask> = new Schema(
     title: {
       type: String,
       required: [true, 'Please enter a title'],
+      minLength: [
+        1,
+        'Title cannot be less than 1 character',
+      ],
       maxLength: [
         80,
         'Title cannot be more than 80 characters',
@@ -17,7 +21,11 @@ const taskSchema: Schema<ITask> = new Schema(
     description: {
       type: String,
       required: true,
-      maxLength: 5000,
+      minLength: [1, 'Description cannot be empty'],
+      maxLength: [
+        5000,
+        'Description cannot be more than 5000 characters',
+      ],
       trim: true,
     },
     status: {
