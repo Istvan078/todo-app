@@ -171,7 +171,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
         {imageUrl && (
           <div className="grid grid-cols-4 grid-rows-1">
             <img
-              className="col-start-1 col-end-5 row-start-1 row-end-2 object-cover rounded-md"
+              className="col-start-1 col-end-5 row-start-1 row-end-2 rounded-md"
               width="100%"
               height="auto"
               src={imageUrl}
@@ -183,7 +183,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
             {!isLoading && (
               <XIcon
                 onClick={handleDeleteTaskImage}
-                className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-1 mt-1 cursor-pointer"
+                className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-1 mt-1 cursor-pointer text-gray-300 font-black"
               ></XIcon>
             )}
           </div>
