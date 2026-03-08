@@ -13,7 +13,7 @@ export const TaskDialog: FC<{
   isDialogOpen: boolean;
   confirmText: string;
   dialogDescription: string;
-  onConfirm: () => void;
+  onConfirm: (isTask: boolean, isImage: boolean) => void;
   onClose: () => void;
 }> = ({
   isDialogOpen,
@@ -29,7 +29,15 @@ export const TaskDialog: FC<{
         <DialogDescription>{dialogDescription}</DialogDescription>
       </DialogHeader>
       <DialogFooter>
-        <Button onClick={onConfirm} variant="destructive">
+        <Button
+          onClick={() =>
+            onConfirm(
+              confirmText.includes("Task") ? true : false,
+              confirmText.includes("Image") ? true : false,
+            )
+          }
+          variant="destructive"
+        >
           {confirmText}
         </Button>
       </DialogFooter>
