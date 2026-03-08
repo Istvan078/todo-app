@@ -116,7 +116,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     setIsDialogOpen(true);
     setDialogConfirmText("Delete Task");
     setDialogDescription(
-      `Are you sure you want to delete this task? This action cannot be undone.`,
+      `Are you sure you want to delete task "${title}"? This action cannot be undone.`,
     );
   }
 
@@ -124,7 +124,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     setIsDialogOpen(true);
     setDialogConfirmText("Delete Image");
     setDialogDescription(
-      `Are you sure you want to delete this image? This action cannot be undone.`,
+      `Are you sure you want to delete the image for task "${title}"? This action cannot be undone.`,
     );
   }
 
