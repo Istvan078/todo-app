@@ -4,35 +4,40 @@ import { UserProfile } from "../userProfile/userProfile";
 import { CreateTaskForm } from "../createTaskForm/createTaskForm";
 import type { ITask } from "@/types/task.interface";
 import { Button } from "../ui/button";
+import { XIcon } from "lucide-react";
 
 type TaskSidebarProps = {
   onClose: () => void;
   editTaskData?: ITask;
+  isDesktop: boolean;
 };
 
 export const TaskSidebar: FC<TaskSidebarProps> = ({
   onClose,
   editTaskData,
+  isDesktop,
 }: {
   onClose: () => void;
   editTaskData?: ITask;
+  isDesktop: boolean;
 }): ReactElement => {
   return (
     <section
       className={`fixed top-0 max-sm:left-0 sm:top-4 sm:right-4 w-full h-full sm:w-md`}
     >
       <Card className="flex flex-col w-full h-full p-6 justify-between">
+        {!isDesktop && (
+          <XIcon
+            className="self-end text-red-500 hover:text-red-600 rounded cursor-pointer"
+            onClick={onClose}
+          ></XIcon>
+        )}
         <UserProfile firstName="User"></UserProfile>
         <CreateTaskForm
           editTaskData={editTaskData}
           onCreated={onClose}
         ></CreateTaskForm>
-        <Button
-          className="self-start bg-red-500 hover:bg-red-600 text-white"
-          onClick={onClose}
-        >
-          Close
-        </Button>
+        <div className="spacer-div"></div>
       </Card>
     </section>
   );

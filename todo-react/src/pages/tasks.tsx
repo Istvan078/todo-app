@@ -33,6 +33,7 @@ export const Tasks: FC = (): ReactElement => {
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
   const [showInProgressTasks, setShowInProgressTasks] = useState(false);
   const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -47,6 +48,16 @@ export const Tasks: FC = (): ReactElement => {
         console.log("Token expired, please login again");
       }
     }
+
+    const mediaQuery = window.matchMedia("(min-width: 1028px)");
+    const handleChange = () => {
+      setIsDesktop(mediaQuery.matches);
+    };
+    handleChange();
+    mediaQuery.addEventListener("change", handleChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
   }, [navigate]);
 
   // EDIT TASK
@@ -83,7 +94,7 @@ export const Tasks: FC = (): ReactElement => {
       )}
       {data && (
         <section className="lg:flex lg:flex-row w-full p-1 lg:p-4 gap-8 grid">
-          <section className="lg:flex lg:basis-2/3 justify-center">
+          <section className="lg:flex lg:basis-2/3 md:justify-start justify-center">
             <div className="flex flex-col lg:w-4/5 p-4">
               <PushSettings
                 onUnsubscribed={handlePushUnsubscribed}
@@ -230,10 +241,13 @@ export const Tasks: FC = (): ReactElement => {
             </div>
           </section>
           <section className="sm:flex sm:basis-1/3">
-            {isSidebarOpen && (
+            {(isDesktop || isSidebarOpen) && (
               <TaskSidebar
-                onClose={() => setIsSidebarOpen(false)}
+                onClose={() => {
+                  if (!isDesktop) setIsSidebarOpen(false);
+                }}
                 editTaskData={editTaskData}
+                isDesktop={isDesktop}
               ></TaskSidebar>
             )}
           </section>
