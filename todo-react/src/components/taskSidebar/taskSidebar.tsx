@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { UserProfile } from "../userProfile/userProfile";
 import { CreateTaskForm } from "../createTaskForm/createTaskForm";
 import type { ITask } from "@/types/task.interface";
-import { Button } from "../ui/button";
 import { XIcon } from "lucide-react";
 
 type TaskSidebarProps = {
