@@ -96,6 +96,11 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
               queryKey: ["fetchTasks"],
               refetchType: "all",
             });
+            sendPush({
+              title: `Task Deleted`,
+              body: `The task "${title}" has been deleted at ${new Date().toLocaleTimeString()}`,
+              url: window.location.origin,
+            });
           },
         },
       );
@@ -113,6 +118,11 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
               refetchType: "all",
             });
             setLoading(false);
+            sendPush({
+              title: `Task Image Deleted`,
+              body: `The image for the task "${title}" has been deleted at ${new Date().toLocaleTimeString()}`,
+              url: window.location.origin,
+            });
           },
         },
       );
