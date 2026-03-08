@@ -100,10 +100,6 @@ export const CreateTaskForm = ({
     if (editTaskData?._id) {
       setIsSubmitting(true);
       formData.append("_id", editTaskData._id);
-      console.log(
-        "Updating task with values:",
-        Object.fromEntries(formData.entries()),
-      );
       updateTask(formData, commonOptions);
     } else {
       setIsSubmitting(true);
@@ -113,7 +109,6 @@ export const CreateTaskForm = ({
 
   useEffect(() => {
     if (editTaskData) {
-      console.log("Setting form values for edit:", editTaskData);
       form.reset({
         title: editTaskData.title,
         description: editTaskData.description,
@@ -122,8 +117,6 @@ export const CreateTaskForm = ({
         status: editTaskData.status,
         isDaily: editTaskData.isDaily,
       });
-
-      console.log(form.getValues());
     }
     if (!isUpdateSuccess && !isCreateSuccess) return;
     if (isCreateSuccess) {

@@ -25,8 +25,16 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
 ): ReactElement => {
   const formData = new FormData();
   if (props._id) formData.append("_id", props._id);
-  const { title, description, dueDate, priority, status, _id, imageUrl } =
-    props;
+  const {
+    title,
+    description,
+    dueDate,
+    priority,
+    status,
+    _id,
+    imageUrl,
+    isDaily,
+  } = props;
   const { onEdit } = props;
   const [progress, setProgress] = useState(false);
   const { mutate } = useUpdateTask();
@@ -186,7 +194,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           {status !== "completed" && (
             <div className="flex col-start-4 col-end-5 justify-self-end">
               <Badge className="mr-2" variant="outline">
-                {formattedDate}
+                {!isDaily ? formattedDate : "Daily"}
               </Badge>
               {priority === "normal" && (
                 <Badge className="bg-sky-800" variant="outline">
@@ -244,7 +252,9 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
                   In Progress
                 </Label>
               </div>
-              <Button onClick={handleTaskCompleted}>Completed</Button>
+              {!isDaily && (
+                <Button onClick={handleTaskCompleted}>Completed</Button>
+              )}
             </>
           )}
           {status === "completed" && (
