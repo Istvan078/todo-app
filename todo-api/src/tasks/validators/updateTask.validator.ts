@@ -61,4 +61,10 @@ export const updateTaskValidator = checkSchema({
     isString: true,
     errorMessage: 'The image public ID must be a string',
   },
+  isDaily: {
+    in: ['body'],
+    default: false,
+    isBoolean: true,
+    optional: true,
+  },
 });

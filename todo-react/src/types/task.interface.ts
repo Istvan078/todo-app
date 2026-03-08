@@ -8,4 +8,5 @@ export interface ITask {
   file?: File;
   imageUrl?: string;
   imagePublicId?: string;
+  isDaily: boolean;
 }

@@ -31,7 +31,7 @@ export const Tasks: FC = (): ReactElement => {
     undefined,
   );
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
-  const [showInProgressTasks, setShowInProgressTasks] = useState(false);
+  const [showDailyTasks, setShowDailyTasks] = useState(false);
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -107,7 +107,7 @@ export const Tasks: FC = (): ReactElement => {
                 <div
                   onClick={() => {
                     setShowCompletedTasks(false);
-                    setShowInProgressTasks(false);
+                    setShowDailyTasks(false);
                   }}
                 >
                   <TasksCounter
@@ -117,30 +117,31 @@ export const Tasks: FC = (): ReactElement => {
                         ? (data.meta.todoTasks as number)
                         : 0
                     }
-                    isActive={!showCompletedTasks && !showInProgressTasks}
+                    isActive={!showCompletedTasks && !showDailyTasks}
                   ></TasksCounter>
                 </div>
                 <div
                   onClick={() => {
                     setShowCompletedTasks(false);
-                    setShowInProgressTasks(true);
+                    setShowDailyTasks(true);
                   }}
                 >
                   <TasksCounter
+                    // CHANGE TO DAILY LATER!
                     status="inProgress"
                     count={
-                      data && data.meta && "inProgressTasks" in data.meta
-                        ? (data.meta.inProgressTasks as number)
+                      data && data.meta && "dailyTasks" in data.meta
+                        ? (data.meta.dailyTasks as number)
                         : 0
                     }
-                    isActive={showInProgressTasks}
+                    isActive={showDailyTasks}
                   ></TasksCounter>
                 </div>
 
                 <div
                   onClick={() => {
                     setShowCompletedTasks(true);
-                    setShowInProgressTasks(false);
+                    setShowDailyTasks(false);
                   }}
                 >
                   <TasksCounter
@@ -165,7 +166,7 @@ export const Tasks: FC = (): ReactElement => {
               </div>
               {data?.data &&
                 !showCompletedTasks &&
-                !showInProgressTasks &&
+                !showDailyTasks &&
                 Array.isArray(data.data.todo) &&
                 data.data.todo.every(
                   (item: any): item is ITask =>
@@ -185,6 +186,7 @@ export const Tasks: FC = (): ReactElement => {
                     priority={task.priority}
                     dueDate={task.dueDate}
                     imageUrl={task.imageUrl}
+                    isDaily={task.isDaily}
                     onEdit={() => openEditTask(task)}
                   ></Task>
                 ))}
@@ -210,22 +212,24 @@ export const Tasks: FC = (): ReactElement => {
                     priority={task.priority}
                     dueDate={task.dueDate}
                     imageUrl={task.imageUrl}
+                    isDaily={task.isDaily}
                     onEdit={() => openEditTask(task)}
                   ></Task>
                 ))}
 
               {data?.data &&
-                showInProgressTasks &&
-                Array.isArray(data.data.inProgress) &&
-                data.data.inProgress.every(
+                showDailyTasks &&
+                Array.isArray(data.data.dailyTasks) &&
+                data.data.dailyTasks.every(
                   (item: any): item is ITask =>
                     "_id" in item &&
                     "title" in item &&
                     "status" in item &&
                     "priority" in item &&
-                    "dueDate" in item,
+                    "dueDate" in item &&
+                    "isDaily" in item,
                 ) &&
-                data.data.inProgress.map((task: any) => (
+                data.data.dailyTasks.map((task: any) => (
                   <Task
                     key={task._id}
                     _id={task._id}
@@ -233,6 +237,7 @@ export const Tasks: FC = (): ReactElement => {
                     description={task.description}
                     status={task.status}
                     priority={task.priority}
+                    isDaily={task.isDaily}
                     dueDate={task.dueDate}
                     imageUrl={task.imageUrl}
                     onEdit={() => openEditTask(task)}

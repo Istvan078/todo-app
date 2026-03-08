@@ -52,4 +52,9 @@ export const createTaskValidator = checkSchema({
     isISO8601: true,
     notEmpty: true,
   },
+  isDaily: {
+    in: ['body'],
+    isBoolean: true,
+    default: false,
+  },
 });

@@ -72,6 +72,9 @@ export class UpdateTaskProvider {
     task.priority = update.priority
       ? update.priority
       : task.priority;
+    task.isDaily = update.isDaily
+      ? update.isDaily
+      : task.isDaily;
     return await task.save();
   }
 }

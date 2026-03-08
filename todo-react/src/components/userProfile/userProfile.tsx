@@ -13,10 +13,10 @@ export const UserProfile: FC<{
         <AvatarFallback
           className={`text-2xl font-semibold ${cn("bg-violet-600", "dark: bg-violet-600")}`}
         >
-          {user.firstName.slice(0, 1)}
+          {user?.firstName.slice(0, 1)}
         </AvatarFallback>
       </Avatar>
-      <h4>Hello, {user.firstName + " " + user.lastName}</h4>
+      <h4>Hello, {user?.firstName + " " + user?.lastName}</h4>
     </div>
   );
 };

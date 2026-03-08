@@ -17,7 +17,8 @@ export const TasksCounter: FC<ITaskCounter> = (props): ReactElement => {
       </div>
       <div className="text-white text-sm sm:text-xl text-center">
         {status === "todo" && "Todo"}
-        {status === "inProgress" && "In-Progress"}
+        {/* // CHANGE TO DAILY LATER! */}
+        {status === "inProgress" && "Daily Tasks"}
         {status === "completed" && "Completed"}
       </div>
     </div>

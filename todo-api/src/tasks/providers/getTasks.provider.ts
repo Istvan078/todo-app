@@ -61,6 +61,7 @@ export class GetTasksProvider {
           todo: ITask[];
           completed: ITask[];
           inProgress: ITask[];
+          dailyTasks: ITask[];
         };
     meta: {};
   }> {
@@ -79,24 +80,32 @@ export class GetTasksProvider {
     const totalTasksCount = tasks.tasks?.length;
     const completedTasksCount =
       tasks.completedTasks?.length;
-    const todoTasksCount = tasks.tasks.filter(
-      (t: any) => t.status === 'todo',
-    )?.length;
+    const todoTasks = tasks.tasks.filter(
+      (t: any) =>
+        t.status !== 'completed' && t.isDaily === false,
+    );
+    const todoTasksCount = todoTasks?.length;
     const inProgressTasks = tasks.tasks.filter(
       (t: any) => t.status === 'inProgress',
     );
     const inProgressTasksCount = inProgressTasks?.length;
+    const dailyTasks = tasks.tasks.filter(
+      (t: any) => t.isDaily,
+    );
+    const dailyTasksCount = dailyTasks?.length;
     return {
       data: {
-        todo: tasks.tasks,
+        todo: todoTasks,
         completed: tasks.completedTasks,
         inProgress: inProgressTasks,
+        dailyTasks: dailyTasks,
       },
       meta: {
         totalTasks: totalTasksCount,
         completedTasks: completedTasksCount,
         todoTasks: todoTasksCount,
         inProgressTasks: inProgressTasksCount,
+        dailyTasks: dailyTasksCount,
         user: {
           firstName: user.firstName,
           lastName: user.lastName,

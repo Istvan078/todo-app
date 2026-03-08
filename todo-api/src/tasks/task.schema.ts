@@ -61,6 +61,10 @@ const taskSchema: Schema<ITask> = new Schema(
       default: '',
       optional: true,
     },
+    isDaily: {
+      type: Boolean,
+      default: false,
+    },
   },
   // SCHEMA OPTIONS OBJECT
   {

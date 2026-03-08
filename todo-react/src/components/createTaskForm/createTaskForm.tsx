@@ -36,6 +36,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { ITask } from "@/types/task.interface";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 import { useSendPush } from "@/hooks/useSendPush.hook";
+import { Switch } from "../ui/switch";
 
 export const CreateTaskForm = ({
   onCreated,
@@ -49,6 +50,7 @@ export const CreateTaskForm = ({
     defaultValues: {
       status: "todo",
       priority: "normal",
+      isDaily: false,
     },
   });
 
@@ -68,6 +70,7 @@ export const CreateTaskForm = ({
     formData.append("status", values.status);
     formData.append("priority", values.priority);
     formData.append("dueDate", values.dueDate.toISOString());
+    formData.append("isDaily", String(values.isDaily));
     if (values.image) {
       formData.append("image", values.image);
     }
@@ -97,22 +100,27 @@ export const CreateTaskForm = ({
     if (editTaskData?._id) {
       setIsSubmitting(true);
       formData.append("_id", editTaskData._id);
+      console.log(
+        "Updating task with values:",
+        Object.fromEntries(formData.entries()),
+      );
       updateTask(formData, commonOptions);
     } else {
       setIsSubmitting(true);
-      console.log("Creating task with values:", formData);
       createTask(formData, commonOptions);
     }
   }
 
   useEffect(() => {
     if (editTaskData) {
+      console.log("Setting form values for edit:", editTaskData);
       form.reset({
         title: editTaskData.title,
         description: editTaskData.description,
         dueDate: new Date(editTaskData.dueDate),
         priority: editTaskData.priority,
         status: editTaskData.status,
+        isDaily: editTaskData.isDaily,
       });
 
       console.log(form.getValues());
@@ -321,7 +329,23 @@ export const CreateTaskForm = ({
               )}
             ></FormField>
           </div>
-          <div className="py-2 flex justify-end">
+          <div className="py-2 flex justify-between">
+            <FormField
+              control={form.control}
+              name="isDaily"
+              render={({ field }) => (
+                <FormItem className="flex items-center">
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={(checked) => field.onChange(checked)}
+                    ></Switch>
+                  </FormControl>
+                  <span className="ml-1 text-sm">Is this a daily task?</span>
+                  <FormMessage></FormMessage>
+                </FormItem>
+              )}
+            ></FormField>
             <Button disabled={isSubmitting} type="submit">
               {editTaskData ? "Update Task" : "Create Task"}
             </Button>

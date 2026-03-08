@@ -5,6 +5,7 @@ export interface ITask {
   description: string;
   status: 'todo' | 'inProgress' | 'completed';
   priority: 'low' | 'normal' | 'high';
+  isDaily: boolean;
   dueDate: Date;
   createdBy: Schema.Types.ObjectId; // user id as string
   imageUrl?: string;

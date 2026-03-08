@@ -30,4 +30,5 @@ export const CreateTaskSchema = z.object({
     error: "Priority is required",
   }),
   image: z.instanceof(File).optional(),
+  isDaily: z.boolean(),
 });
