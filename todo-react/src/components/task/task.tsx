@@ -18,6 +18,7 @@ import { useDeleteTask } from "@/hooks/useDeleteTask.hook";
 import { useSendPush } from "@/hooks/useSendPush.hook";
 import { useDeleteTaskImage } from "@/hooks/useDeleteTaskImage.hook";
 import { Spinner } from "@/components/ui/spinner";
+import { TaskDialog } from "../dialog/dialog";
 
 export const Task: FC<ITask & { onEdit: () => void }> = (
   props: ITask & { onEdit: () => void },
@@ -34,6 +35,9 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
   const { mutate: sendPush } = useSendPush();
   const queryClient = useQueryClient();
   const [isLoading, setLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogConfirmText, setDialogConfirmText] = useState("");
+  const [dialogDescription, setDialogDescription] = useState("");
 
   const formattedDate = new Date(dueDate).toLocaleDateString("en-GB", {
     day: "numeric",
@@ -86,8 +90,8 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     });
   }
 
-  function handleTaskDeleted() {
-    if (_id)
+  function handleConfirmDelete(isTask = true, isImage = false) {
+    if (isTask && _id)
       mutateDelete(
         { _id: _id },
         {
@@ -104,6 +108,24 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           },
         },
       );
+    if (isImage && _id) handleDeleteTaskImage();
+    setIsDialogOpen(false);
+  }
+
+  function openTaskDeleteDialog() {
+    setIsDialogOpen(true);
+    setDialogConfirmText("Delete Task");
+    setDialogDescription(
+      `Are you sure you want to delete this task? This action cannot be undone.`,
+    );
+  }
+
+  function openImageDeleteDialog() {
+    setIsDialogOpen(true);
+    setDialogConfirmText("Delete Image");
+    setDialogDescription(
+      `Are you sure you want to delete this image? This action cannot be undone.`,
+    );
   }
 
   function handleDeleteTaskImage() {
@@ -130,102 +152,111 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
   }
 
   return (
-    <Card
-      className={`${status === "completed" ? "bg-slate-800 gap-3" : ""} w-full mb-8 py-2 sm:py-6`}
-    >
-      <CardHeader className="grid grid-cols-4 grid-rows-2 gap-y-5 sm:flex sm:flex-row sm:justify-between px-3">
-        <X
-          onClick={handleTaskDeleted}
-          className={`${status === "completed" ? "col-start-5 col-end-6" : "col-start-1 col-end-2"} self-center h-4 w-4`}
-        />
-        <CardTitle
-          className={`${status === "completed" ? "row-start-1 row-end-3" : "row-start-2 row-end-3"} col-start-1 col-end-4 sm:basis-2/3 sm:leading-8 self-center`}
-        >
-          {title}
-        </CardTitle>
-        {status !== "completed" && (
-          <Button
-            onClick={onEdit}
-            size="sm"
-            className="row-start-2 row-end-3 col-start-4 col-end-5 self-center justify-self-end bg-orange-300 hover:bg-orange-400"
-          >
-            Edit
-            <Pencil className="h-4 w-4"></Pencil>
-          </Button>
-        )}
-        {status !== "completed" && (
-          <div className="flex col-start-4 col-end-5 justify-self-end">
-            <Badge className="mr-2" variant="outline">
-              {formattedDate}
-            </Badge>
-            {priority === "normal" && (
-              <Badge className="bg-sky-800" variant="outline">
-                {priority}
-              </Badge>
-            )}
-            {priority === "high" && (
-              <Badge className="bg-red-800" variant="outline">
-                {priority}
-              </Badge>
-            )}
-            {priority === "low" && (
-              <Badge className="bg-green-800" variant="outline">
-                {priority}
-              </Badge>
-            )}
-          </div>
-        )}
-      </CardHeader>
-      <CardContent className="px-3">
-        <p>{description}</p>
-        {imageUrl && (
-          <div className="grid grid-cols-4 grid-rows-1">
-            <img
-              className="col-start-1 col-end-5 row-start-1 row-end-2 rounded-md"
-              width="100%"
-              height="auto"
-              src={imageUrl}
-              alt={title}
-            />
-            {isLoading && (
-              <Spinner className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-2 mt-2"></Spinner>
-            )}
-            {!isLoading && (
-              <XIcon
-                onClick={handleDeleteTaskImage}
-                className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-1 mt-1 cursor-pointer text-gray-300 font-black"
-              ></XIcon>
-            )}
-          </div>
-        )}
-      </CardContent>
-      <CardFooter
-        className={`flex flex-row ${status === "completed" ? "justify-start" : "justify-between"} px-3`}
+    <>
+      <TaskDialog
+        isDialogOpen={isDialogOpen}
+        confirmText={dialogConfirmText}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setIsDialogOpen(false)}
+        dialogDescription={dialogDescription}
+      ></TaskDialog>
+      <Card
+        className={`${status === "completed" ? "bg-slate-800 gap-3" : ""} w-full mb-8 py-2 sm:py-6`}
       >
-        {(status === "todo" || status === "inProgress") && (
-          <>
-            <div className="flex flex-row items-center">
-              <Switch
-                id="in-progress"
-                checked={progress}
-                onCheckedChange={handleProgressChange}
-              ></Switch>
-              <Label className="ml-4" htmlFor="in-progress">
-                In Progress
-              </Label>
+        <CardHeader className="grid grid-cols-4 grid-rows-2 gap-y-5 sm:flex sm:flex-row sm:justify-between px-3">
+          <X
+            onClick={openTaskDeleteDialog}
+            className={`${status === "completed" ? "col-start-5 col-end-6" : "col-start-1 col-end-2"} self-center h-4 w-4`}
+          />
+          <CardTitle
+            className={`${status === "completed" ? "row-start-1 row-end-3" : "row-start-2 row-end-3"} col-start-1 col-end-4 sm:basis-2/3 sm:leading-8 self-center`}
+          >
+            {title}
+          </CardTitle>
+          {status !== "completed" && (
+            <Button
+              onClick={onEdit}
+              size="sm"
+              className="row-start-2 row-end-3 col-start-4 col-end-5 self-center justify-self-end bg-orange-300 hover:bg-orange-400"
+            >
+              Edit
+              <Pencil className="h-4 w-4"></Pencil>
+            </Button>
+          )}
+          {status !== "completed" && (
+            <div className="flex col-start-4 col-end-5 justify-self-end">
+              <Badge className="mr-2" variant="outline">
+                {formattedDate}
+              </Badge>
+              {priority === "normal" && (
+                <Badge className="bg-sky-800" variant="outline">
+                  {priority}
+                </Badge>
+              )}
+              {priority === "high" && (
+                <Badge className="bg-red-800" variant="outline">
+                  {priority}
+                </Badge>
+              )}
+              {priority === "low" && (
+                <Badge className="bg-green-800" variant="outline">
+                  {priority}
+                </Badge>
+              )}
             </div>
-            <Button onClick={handleTaskCompleted}>Completed</Button>
-          </>
-        )}
-        {status === "completed" && (
-          <>
-            <Badge className="justify-self-start self-end bg-green-800 text-gray-300 tracking-widest font-bold">
-              Completed
-            </Badge>
-            <CheckIcon className="h-4 w-4 ml-auto text-green-500" />
-          </>
-        )}
-      </CardFooter>
-    </Card>
+          )}
+        </CardHeader>
+        <CardContent className="px-3">
+          <p>{description}</p>
+          {imageUrl && (
+            <div className="grid grid-cols-4 grid-rows-1">
+              <img
+                className="col-start-1 col-end-5 row-start-1 row-end-2 rounded-md"
+                width="100%"
+                height="auto"
+                src={imageUrl}
+                alt={title}
+              />
+              {isLoading && (
+                <Spinner className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-2 mt-2"></Spinner>
+              )}
+              {!isLoading && (
+                <XIcon
+                  onClick={openImageDeleteDialog}
+                  className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-1 mt-1 cursor-pointer text-gray-300 font-black"
+                ></XIcon>
+              )}
+            </div>
+          )}
+        </CardContent>
+        <CardFooter
+          className={`flex flex-row ${status === "completed" ? "justify-start" : "justify-between"} px-3`}
+        >
+          {(status === "todo" || status === "inProgress") && (
+            <>
+              <div className="flex flex-row items-center">
+                <Switch
+                  id="in-progress"
+                  checked={progress}
+                  onCheckedChange={handleProgressChange}
+                ></Switch>
+                <Label className="ml-4" htmlFor="in-progress">
+                  In Progress
+                </Label>
+              </div>
+              <Button onClick={handleTaskCompleted}>Completed</Button>
+            </>
+          )}
+          {status === "completed" && (
+            <>
+              <Badge className="justify-self-start self-end bg-green-800 text-gray-300 tracking-widest font-bold">
+                Completed
+              </Badge>
+              <CheckIcon className="h-4 w-4 ml-auto text-green-500" />
+            </>
+          )}
+        </CardFooter>
+      </Card>
+    </>
   );
 };
