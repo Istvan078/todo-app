@@ -5,4 +5,7 @@ export interface ITask {
   status: "todo" | "inProgress" | "completed";
   priority: "low" | "normal" | "high";
   dueDate: string;
+  file?: File;
+  imageUrl?: string;
+  imagePublicId?: string;
 }

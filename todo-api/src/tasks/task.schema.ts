@@ -43,6 +43,16 @@ const taskSchema: Schema<ITask> = new Schema(
       required: true,
       index: true,
     },
+    imageUrl: {
+      type: String,
+      default: '',
+      optional: true,
+    },
+    imagePublicId: {
+      type: String,
+      default: '',
+      optional: true,
+    },
   },
   // SCHEMA OPTIONS OBJECT
   {

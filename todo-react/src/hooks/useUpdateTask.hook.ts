@@ -1,16 +1,18 @@
 import { setHeaders } from "@/headers/auth.header";
-import type { IUpdateTask } from "@/types/updateTask.interface";
 import { useMutation } from "@tanstack/react-query";
 
-const updateTask = async (task: IUpdateTask) => {
+const updateTask = async (formData: FormData) => {
   const headers = setHeaders();
+  // because we're sending FormData, we need to let the browser set the Content-Type header with the correct boundary
+  headers?.delete("Content-Type");
   const response = await fetch(`${import.meta.env.VITE_API_URL}tasks/update`, {
     method: "PATCH",
     headers: headers,
-    body: JSON.stringify(task),
+    body: formData,
   });
   if (!response.ok) {
-    throw new Error("Network response not OK");
+    const errBody = await response.json();
+    throw new Error(errBody?.error?.[0]?.msg || "Failed to update task");
   }
   return await response.json();
 };

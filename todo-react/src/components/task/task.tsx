@@ -20,7 +20,8 @@ import { useSendPush } from "@/hooks/useSendPush.hook";
 export const Task: FC<ITask & { onEdit: () => void }> = (
   props: ITask & { onEdit: () => void },
 ): ReactElement => {
-  const { title, description, dueDate, priority, status, _id } = props;
+  const { title, description, dueDate, priority, status, _id, imageUrl } =
+    props;
   const { onEdit } = props;
   const [progress, setProgress] = useState(false);
   const { mutate } = useUpdateTask();
@@ -145,6 +146,9 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
       </CardHeader>
       <CardContent className="px-3">
         <p>{description}</p>
+        {imageUrl && (
+          <img width="100%" height="auto" src={imageUrl} alt={title} />
+        )}
       </CardContent>
       <CardFooter
         className={`flex flex-row ${status === "completed" ? "justify-start" : "justify-between"} px-3`}

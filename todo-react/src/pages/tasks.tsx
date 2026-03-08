@@ -173,6 +173,7 @@ export const Tasks: FC = (): ReactElement => {
                     status={task.status}
                     priority={task.priority}
                     dueDate={task.dueDate}
+                    imageUrl={task.imageUrl}
                     onEdit={() => openEditTask(task)}
                   ></Task>
                 ))}
@@ -197,6 +198,7 @@ export const Tasks: FC = (): ReactElement => {
                     status={task.status}
                     priority={task.priority}
                     dueDate={task.dueDate}
+                    imageUrl={task.imageUrl}
                     onEdit={() => openEditTask(task)}
                   ></Task>
                 ))}
@@ -221,6 +223,7 @@ export const Tasks: FC = (): ReactElement => {
                     status={task.status}
                     priority={task.priority}
                     dueDate={task.dueDate}
+                    imageUrl={task.imageUrl}
                     onEdit={() => openEditTask(task)}
                   ></Task>
                 ))}

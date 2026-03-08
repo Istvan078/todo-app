@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.9.0",
     "cors": "^2.8.6",
     "dotenv": "^16.4.5",
     "express": "^5.2.1",
@@ -21,7 +22,9 @@
     "inversify": "^7.11.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.6",
+    "multer": "^2.1.1",
     "reflect-metadata": "^0.2.2",
+    "streamifier": "^0.1.1",
     "typeorm": "^0.3.20",
     "web-push": "^3.6.7"
   },
@@ -30,7 +33,9 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.1.0",
     "@types/node": "^20.12.7",
+    "@types/streamifier": "^0.1.2",
     "@types/web-push": "^3.6.4",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",

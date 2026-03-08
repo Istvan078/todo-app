@@ -3,12 +3,14 @@ import type { IResponse } from "@/types/response.interface";
 import type { ITask } from "@/types/task.interface";
 import { useMutation } from "@tanstack/react-query";
 
-const createTask = async (task: ITask) => {
+const createTask = async (formData: FormData) => {
   const headers = setHeaders();
+  // because we're sending FormData, we need to let the browser set the Content-Type header with the correct boundary
+  headers?.delete("Content-Type");
   const response = await fetch(`${import.meta.env.VITE_API_URL}tasks/create`, {
     method: "POST",
     headers: headers,
-    body: JSON.stringify(task),
+    body: formData,
   });
   if (!response.ok) {
     throw new Error("Network response not OK");

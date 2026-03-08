@@ -7,6 +7,8 @@ export interface ITask {
   priority: 'low' | 'normal' | 'high';
   dueDate: Date;
   createdBy: Schema.Types.ObjectId; // user id as string
+  imageUrl?: string;
+  imagePublicId?: string;
 }
 
 // MAKING OPTIONAL ALL THE ITask properties with Partial plus adding the _id

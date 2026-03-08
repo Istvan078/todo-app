@@ -15,4 +15,5 @@ export const CreateTaskSchema = z.object({
   priority: z.enum(["low", "normal", "high"], {
     message: "Priority is required",
   }),
+  image: z.instanceof(File).optional(),
 });

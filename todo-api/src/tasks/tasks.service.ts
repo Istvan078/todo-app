@@ -3,6 +3,9 @@ import { Task } from './task.schema';
 import { Model, QueryFilter, Schema } from 'mongoose';
 import { ITask } from './task.interface';
 import { ITaskPagination } from './interfaces/taskPagination.interface';
+import cloudinary from '../cloudinary';
+import streamifier from 'streamifier';
+import { UploadApiResponse } from 'cloudinary';
 
 @injectable()
 export class TasksService {
@@ -13,8 +16,33 @@ export class TasksService {
   public async createTask(
     taskData: ITask,
     userId: Schema.Types.ObjectId,
+    file?: Express.Multer.File,
   ) {
     taskData.createdBy = userId;
+    if (file) {
+      if (!file.mimetype.startsWith('image/')) {
+        throw new Error('Only image files are allowed');
+      }
+      const uploadedImage: UploadApiResponse =
+        await new Promise((resolve, reject) => {
+          const uploadStream =
+            cloudinary.uploader.upload_stream(
+              {
+                folder: 'todo-app',
+                resource_type: 'image',
+              },
+              (error, result) => {
+                if (error || !result) return reject(error);
+                resolve(result);
+              },
+            );
+          streamifier
+            .createReadStream(file.buffer)
+            .pipe(uploadStream);
+        });
+      taskData.imageUrl = uploadedImage.secure_url;
+      taskData.imagePublicId = uploadedImage.public_id;
+    }
     return await new this.taskModel(taskData).save();
   }
   // Find by id

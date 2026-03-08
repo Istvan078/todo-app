@@ -37,7 +37,11 @@ export class TasksController {
       const tasks: {
         data:
           | ITask[]
-          | { todo: ITask[]; completed: ITask[] };
+          | {
+              todo: ITask[];
+              completed: ITask[];
+              inProgress: ITask[];
+            };
         meta: {};
       } = await this.getTasksProvider.findAllTasksByUserId(
         validatedData,
@@ -60,6 +64,7 @@ export class TasksController {
       return await this.tasksService.createTask(
         validatedData,
         userId,
+        req.file,
       );
     } catch (err: any) {
       throw new Error(err);
@@ -75,6 +80,7 @@ export class TasksController {
     try {
       return await this.updateTaskProvider.updateTask(
         validatedData,
+        req.file,
       );
     } catch (err: any) {
       throw new Error(err);

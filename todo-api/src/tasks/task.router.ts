@@ -11,6 +11,14 @@ import { getTasksValidator } from './validators/getTasks.validator';
 import { StatusCodes } from 'http-status-codes';
 import { updateTaskValidator } from './validators/updateTask.validator';
 import { deleteTaskValidator } from './validators/deleteTask.validator';
+import multer from 'multer';
+
+const upload: multer.Multer = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 15 * 1024 * 1024, // 15 MB
+  },
+});
 
 @injectable()
 export class TasksRouter {
@@ -47,6 +55,7 @@ export class TasksRouter {
 
     this.router.post(
       '/create',
+      upload.single('image'),
       createTaskValidator,
       async (
         req: Request<{}, {}, ITask>,
@@ -71,6 +80,7 @@ export class TasksRouter {
 
     this.router.patch(
       '/update',
+      upload.single('image'),
       updateTaskValidator,
       async (
         req: Request<{}, {}, IPartialTaskWithId>,

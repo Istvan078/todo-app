@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,7 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { CalendarIcon, ChevronDownIcon } from "lucide-react";
+import { CalendarIcon, ChevronDownIcon, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CreateTaskSchema } from "@/schemas/createTask.schema";
@@ -58,9 +58,20 @@ export const CreateTaskForm = ({
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
+  const imageInputId = useId();
 
   function onSubmit(values: z.infer<typeof CreateTaskSchema>) {
-    const dueDate = values.dueDate.toISOString();
+    // const dueDate = values.dueDate.toISOString();
+
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    formData.append("status", values.status);
+    formData.append("priority", values.priority);
+    formData.append("dueDate", values.dueDate.toISOString());
+    if (values.image) {
+      formData.append("image", values.image);
+    }
 
     const commonOptions = {
       onSuccess: () => {
@@ -86,10 +97,12 @@ export const CreateTaskForm = ({
 
     if (editTaskData?._id) {
       setIsSubmitting(true);
-      updateTask({ ...values, dueDate, _id: editTaskData._id }, commonOptions);
+      formData.append("_id", editTaskData._id);
+      updateTask(formData, commonOptions);
     } else {
       setIsSubmitting(true);
-      createTask({ ...values, dueDate }, commonOptions);
+      console.log("Creating task with values:", formData);
+      createTask(formData, commonOptions);
     }
   }
 
@@ -101,7 +114,12 @@ export const CreateTaskForm = ({
         dueDate: new Date(editTaskData.dueDate),
         priority: editTaskData.priority,
         status: editTaskData.status,
+        image: editTaskData.imagePublicId
+          ? new File([], "Has image")
+          : undefined,
       });
+
+      console.log(form.getValues());
     }
     if (!isUpdateSuccess && !isCreateSuccess) return;
     if (isCreateSuccess) {
@@ -164,6 +182,42 @@ export const CreateTaskForm = ({
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                    <FormMessage></FormMessage>
+                  </FormItem>
+                )}
+              ></FormField>
+            </div>
+            <div className="w-full mr-2">
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        className="hidden"
+                        id={imageInputId}
+                        type="file"
+                        name={field.name}
+                        ref={field.ref}
+                        onBlur={field.onBlur}
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          field.onChange(file);
+                        }}
+                      ></Input>
+                    </FormControl>
+                    <label
+                      htmlFor={imageInputId}
+                      className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <Paperclip className="h-4 w-4" />
+                    </label>
+
+                    <span className="text-sm text-muted-foreground truncate">
+                      {field.value?.name && field.value.name}
+                    </span>
                     <FormMessage></FormMessage>
                   </FormItem>
                 )}
