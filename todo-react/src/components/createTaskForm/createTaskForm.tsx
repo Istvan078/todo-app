@@ -114,9 +114,6 @@ export const CreateTaskForm = ({
         dueDate: new Date(editTaskData.dueDate),
         priority: editTaskData.priority,
         status: editTaskData.status,
-        image: editTaskData.imagePublicId
-          ? new File([], "Has image")
-          : undefined,
       });
 
       console.log(form.getValues());
@@ -216,7 +213,8 @@ export const CreateTaskForm = ({
                     </label>
 
                     <span className="text-sm text-muted-foreground truncate">
-                      {field.value?.name && field.value.name}
+                      {(field.value?.name && field.value.name) ||
+                        editTaskData?.imageUrl?.split("/").pop()}
                     </span>
                     <FormMessage></FormMessage>
                   </FormItem>

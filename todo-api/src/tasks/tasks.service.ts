@@ -30,6 +30,9 @@ export class TasksService {
               {
                 folder: 'todo-app',
                 resource_type: 'image',
+                filename_override: file.originalname,
+                use_filename: true,
+                unique_filename: false,
               },
               (error, result) => {
                 if (error || !result) return reject(error);

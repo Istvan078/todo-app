@@ -38,6 +38,10 @@ export class UpdateTaskProvider {
               {
                 folder: 'todo-app',
                 resource_type: 'image',
+                // To keep original filename and prevent Cloudinary from adding random characters
+                filename_override: file.originalname,
+                use_filename: true,
+                unique_filename: false,
               },
               (error, result) => {
                 if (error || !result) return reject(error);
