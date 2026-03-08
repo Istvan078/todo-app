@@ -49,6 +49,7 @@ export class TasksController {
       } = await this.getTasksProvider.findAllTasksByUserId(
         validatedData,
         userId,
+        (req as any).user,
       );
       return tasks;
     } catch (err: any) {

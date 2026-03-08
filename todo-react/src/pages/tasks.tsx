@@ -248,6 +248,7 @@ export const Tasks: FC = (): ReactElement => {
                 }}
                 editTaskData={editTaskData}
                 isDesktop={isDesktop}
+                user={data.meta.user}
               ></TaskSidebar>
             )}
           </section>

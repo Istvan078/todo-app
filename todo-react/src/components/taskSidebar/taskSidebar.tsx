@@ -9,17 +9,19 @@ type TaskSidebarProps = {
   onClose: () => void;
   editTaskData?: ITask;
   isDesktop: boolean;
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
 };
 
 export const TaskSidebar: FC<TaskSidebarProps> = ({
   onClose,
   editTaskData,
   isDesktop,
-}: {
-  onClose: () => void;
-  editTaskData?: ITask;
-  isDesktop: boolean;
-}): ReactElement => {
+  user,
+}: TaskSidebarProps): ReactElement => {
   return (
     <section
       className={`fixed top-0 max-sm:left-0 sm:top-4 sm:right-4 w-full h-full sm:w-md`}
@@ -31,7 +33,7 @@ export const TaskSidebar: FC<TaskSidebarProps> = ({
             onClick={onClose}
           ></XIcon>
         )}
-        <UserProfile firstName="User"></UserProfile>
+        <UserProfile user={user}></UserProfile>
         <CreateTaskForm
           editTaskData={editTaskData}
           onCreated={onClose}

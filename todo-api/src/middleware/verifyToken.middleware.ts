@@ -26,6 +26,7 @@ export const verifyToken = (
       process.env.JWT_SECRET_KEY as string,
     );
     (req as any).user = decoded;
+    console.log(decoded);
     return next();
   } catch (err) {
     return res

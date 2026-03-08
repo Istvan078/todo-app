@@ -53,6 +53,7 @@ export class GetTasksProvider {
   public async findAllTasksByUserId(
     pagination: Partial<ITaskPagination> = { order: 'asc' },
     userId: Schema.Types.ObjectId,
+    user: any,
   ): Promise<{
     data:
       | ITask[]
@@ -96,6 +97,11 @@ export class GetTasksProvider {
         completedTasks: completedTasksCount,
         todoTasks: todoTasksCount,
         inProgressTasks: inProgressTasksCount,
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        },
       },
     };
   }
