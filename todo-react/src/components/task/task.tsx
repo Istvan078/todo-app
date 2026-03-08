@@ -20,6 +20,8 @@ import { useSendPush } from "@/hooks/useSendPush.hook";
 export const Task: FC<ITask & { onEdit: () => void }> = (
   props: ITask & { onEdit: () => void },
 ): ReactElement => {
+  const formData = new FormData();
+  if (props._id) formData.append("_id", props._id);
   const { title, description, dueDate, priority, status, _id, imageUrl } =
     props;
   const { onEdit } = props;
@@ -43,43 +45,47 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
 
   function handleProgressChange(value: boolean) {
     setProgress(value);
-    if (_id)
-      mutate(
-        { _id: _id, status: value ? "inProgress" : "todo" },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: ["fetchTasks"],
-              refetchType: "all",
-            });
-            sendPush({
-              title: `Task ${value ? "In Progress" : "Set to To-Do"}`,
-              body: `The task "${title}" is now ${value ? "in progress" : "set to to-do"} at ${new Date().toLocaleTimeString()}`,
-              url: window.location.origin,
-            });
-          },
+    if (_id) {
+      formData.set("status", value ? "inProgress" : "todo");
+    }
+    mutate(
+      { formData },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["fetchTasks"],
+            refetchType: "all",
+          });
+          sendPush({
+            title: `Task ${value ? "In Progress" : "Set to To-Do"}`,
+            body: `The task "${title}" is now ${value ? "in progress" : "set to to-do"} at ${new Date().toLocaleTimeString()}`,
+            url: window.location.origin,
+          });
         },
-      );
+      },
+    );
   }
 
   function handleTaskCompleted() {
-    if (_id)
-      mutate(
-        { _id: _id, status: "completed" },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: ["fetchTasks"],
-              refetchType: "all",
-            });
-            sendPush({
-              title: "Task Completed",
-              body: `The task "${title}" has been completed! at ${new Date().toLocaleTimeString()}`,
-              url: window.location.origin,
-            });
-          },
+    if (_id) {
+      formData.set("status", "completed");
+    }
+    mutate(
+      { formData },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["fetchTasks"],
+            refetchType: "all",
+          });
+          sendPush({
+            title: "Task Completed",
+            body: `The task "${title}" has been completed! at ${new Date().toLocaleTimeString()}`,
+            url: window.location.origin,
+          });
         },
-      );
+      },
+    );
   }
 
   function handleTaskDeleted() {

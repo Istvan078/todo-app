@@ -1,7 +1,7 @@
 import { setHeaders } from "@/headers/auth.header";
 import { useMutation } from "@tanstack/react-query";
 
-const updateTask = async (formData: FormData) => {
+const updateTask = async ({ formData }: { formData: FormData }) => {
   const headers = setHeaders();
   // because we're sending FormData, we need to let the browser set the Content-Type header with the correct boundary
   headers?.delete("Content-Type");
