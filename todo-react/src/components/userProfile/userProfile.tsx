@@ -1,15 +1,16 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import type { FC, ReactElement } from "react";
 
 export const UserProfile: FC<{
-  user: { firstName: string; lastName: string; email: string };
+  user: { firstName: string; lastName: string; email: string; avatarUrl?: string };
 }> = (props): ReactElement => {
   const { user } = props;
 
   return (
     <div className="flex flex-col w-full items-center pt-4">
-      <Avatar className={`mb-4 ${cn("h-20", "w-20")}`}>
+      <Avatar className={`mb-4 ${cn("h-20", "w-20")}`}> 
+        <AvatarImage src={user?.avatarUrl} alt={`${user?.firstName} ${user?.lastName}`} />
         <AvatarFallback
           className={`text-2xl font-semibold ${cn("bg-violet-600", "dark: bg-violet-600")}`}
         >
