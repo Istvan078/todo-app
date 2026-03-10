@@ -10,6 +10,8 @@ export interface ITask {
   createdBy: Schema.Types.ObjectId; // user id as string
   imageUrl?: string;
   imagePublicId?: string;
+  isDoneToday?: boolean; // for daily tasks to track if they are done today
+  doneTodayAt?: Date; // to track when the daily task was marked as done
 }
 
 // MAKING OPTIONAL ALL THE ITask properties with Partial plus adding the _id

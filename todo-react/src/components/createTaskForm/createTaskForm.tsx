@@ -71,6 +71,9 @@ export const CreateTaskForm = ({
     formData.append("priority", values.priority);
     formData.append("dueDate", values.dueDate.toISOString());
     formData.append("isDaily", String(values.isDaily));
+    if (values.isDaily) {
+      formData.append("isDoneToday", "false");
+    }
     if (values.image) {
       formData.append("image", values.image);
     }

@@ -235,7 +235,8 @@ export const Tasks: FC = (): ReactElement => {
                     "status" in item &&
                     "priority" in item &&
                     "dueDate" in item &&
-                    "isDaily" in item,
+                    "isDaily" in item &&
+                    "isDoneToday" in item,
                 ) &&
                 data.data.dailyTasks.map((task: any) => (
                   <Task
@@ -246,6 +247,9 @@ export const Tasks: FC = (): ReactElement => {
                     status={task.status}
                     priority={task.priority}
                     isDaily={task.isDaily}
+                    // ha elmult ejfel akkor resetelje az isDoneToday-t false-ra, és a doneTodayAt-ot null-ra, ezt ird meg nekem kodban:
+                    isDoneToday={task.isDoneToday}
+                    doneTodayAt={task.doneTodayAt}
                     dueDate={task.dueDate}
                     imageUrl={task.imageUrl}
                     onEdit={() => openEditTask(task)}

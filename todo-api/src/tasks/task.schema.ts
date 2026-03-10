@@ -65,6 +65,14 @@ const taskSchema: Schema<ITask> = new Schema(
       type: Boolean,
       default: false,
     },
+    isDoneToday: {
+      type: Boolean,
+      default: false,
+    },
+    doneTodayAt: {
+      type: Date,
+      optional: true,
+    },
   },
   // SCHEMA OPTIONS OBJECT
   {

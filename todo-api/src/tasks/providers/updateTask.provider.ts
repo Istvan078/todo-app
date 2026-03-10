@@ -75,6 +75,12 @@ export class UpdateTaskProvider {
     task.isDaily = update.isDaily
       ? update.isDaily
       : task.isDaily;
+    task.isDoneToday = update.isDoneToday
+      ? update.isDoneToday
+      : task.isDoneToday;
+    task.doneTodayAt = update.doneTodayAt
+      ? update.doneTodayAt
+      : task.doneTodayAt;
     return await task.save();
   }
 }

@@ -95,9 +95,27 @@ export class GetTasksProvider {
       (t: any) => t.status === 'inProgress',
     );
     const inProgressTasksCount = inProgressTasks?.length;
-    const dailyTasks = tasks.tasks.filter(
-      (t: any) => t.isDaily,
-    );
+    const dailyTasks = tasks.tasks
+      .filter((t: any) => t.isDaily)
+      .map((t: any) => {
+        if (t.isDoneToday) {
+          const doneTodayAt = new Date(t.doneTodayAt);
+          const now = new Date();
+          // if doneTodayAt is before today at 00:00 reset isDoneToday to false and doneTodayAt to null
+          if (
+            doneTodayAt.getTime() <
+            new Date(
+              now.getFullYear(),
+              now.getMonth(),
+              now.getDate(),
+            ).getTime()
+          ) {
+            t.isDoneToday = false;
+            t.doneTodayAt = null;
+          }
+        }
+        return t;
+      });
     const dailyTasksCount = dailyTasks?.length;
     return {
       data: {

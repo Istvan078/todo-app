@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import type { ITask } from "@/types/task.interface";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckIcon, Pencil, X, XIcon } from "lucide-react";
+import { CheckCircleIcon, CheckIcon, Pencil, X, XIcon } from "lucide-react";
 import { useDeleteTask } from "@/hooks/useDeleteTask.hook";
 import { useSendPush } from "@/hooks/useSendPush.hook";
 import { useDeleteTaskImage } from "@/hooks/useDeleteTaskImage.hook";
@@ -34,6 +34,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     _id,
     imageUrl,
     isDaily,
+    isDoneToday,
   } = props;
   const { onEdit } = props;
   const [progress, setProgress] = useState(false);
@@ -57,7 +58,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     if (status === "inProgress") {
       setProgress(true);
     }
-  }, [status]);
+  }, [status, isDoneToday]);
 
   function handleProgressChange(value: boolean) {
     setProgress(value);
@@ -92,6 +93,26 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
         sendPush({
           title: "Task Completed",
           body: `The task "${title}" has been completed! at ${new Date().toLocaleTimeString()}`,
+          url: window.location.origin,
+        });
+      },
+    });
+  }
+
+  function handleSetIsDoneToday(value: boolean) {
+    if (_id) {
+      formData.set("isDoneToday", String(value));
+      formData.set("doneTodayAt", new Date().toISOString());
+    }
+    mutate(formData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchTasks"],
+          refetchType: "all",
+        });
+        sendPush({
+          title: `Task Done for Today`,
+          body: `The task "${title}" has been marked as done for today at ${new Date().toLocaleTimeString()}`,
           url: window.location.origin,
         });
       },
@@ -256,6 +277,22 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
                 <Button onClick={handleTaskCompleted}>Completed</Button>
               )}
             </>
+          )}
+          {isDaily && (
+            <Button
+              size={"sm"}
+              className={
+                isDoneToday
+                  ? "bg-green-700 tracking-wide"
+                  : "bg-orange-600 tracking-wide"
+              }
+              onClick={() => handleSetIsDoneToday(true)}
+            >
+              {!isDoneToday ? "Done Today?" : "Done for Today"}
+              {isDoneToday && (
+                <CheckCircleIcon className="text-white"></CheckCircleIcon>
+              )}
+            </Button>
           )}
           {status === "completed" && (
             <>

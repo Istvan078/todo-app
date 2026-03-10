@@ -67,4 +67,15 @@ export const updateTaskValidator = checkSchema({
     isBoolean: true,
     optional: true,
   },
+  isDoneToday: {
+    in: ['body'],
+    default: false,
+    isBoolean: true,
+    optional: true,
+  },
+  doneTodayAt: {
+    in: ['body'],
+    optional: true,
+    isISO8601: true,
+  },
 });
