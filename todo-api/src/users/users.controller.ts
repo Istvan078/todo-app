@@ -42,4 +42,22 @@ export class UsersController {
       throw new Error(err);
     }
   }
+
+  public async handleUpdateUser(
+    req: Request,
+    res: Response,
+  ) {
+    const validatedData = matchedData(req);
+    try {
+      const updatedToken =
+        await this.usersService.updateUser(
+          (req as any)?.user._id,
+          validatedData,
+          req.file,
+        );
+      return updatedToken;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
 }

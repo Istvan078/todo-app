@@ -35,6 +35,14 @@ const userSchema: Schema<IUser> = new Schema({
       'Password must be at least 6 characters',
     ],
   },
+  avatarUrl: {
+    type: String,
+    required: false,
+  },
+  avatarPublicId: {
+    type: String,
+    required: false,
+  },
 });
 
 export const User = model('User', userSchema);

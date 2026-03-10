@@ -8,6 +8,9 @@ import { Model } from 'mongoose';
 import { User } from './user.schema';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
+import cloudinary from '../cloudinary';
+import { UploadApiResponse } from 'cloudinary';
+import streamifier from 'streamifier';
 
 @injectable()
 export class UsersService {
@@ -35,6 +38,8 @@ export class UsersService {
               firstName: user.firstName,
               lastName: user.lastName,
               email: user.email,
+              avatarUrl: user?.avatarUrl,
+              avatarPublicId: user?.avatarPublicId,
               _id: user._id,
             },
             process.env.JWT_SECRET_KEY as string,
@@ -44,6 +49,8 @@ export class UsersService {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
+            avatarUrl: user?.avatarUrl,
+            avatarPublicId: user?.avatarPublicId,
             _id: user._id,
             token: token,
             tokenExp: Date.now() + 7 * 24 * 60 * 60 * 1000, // token expires in 7 days
@@ -81,6 +88,79 @@ export class UsersService {
       _id: user._id,
       token: token,
       tokenExp: new Date().getTime() + 10 * 60 * 1000,
+    };
+  }
+
+  public async updateUser(
+    userId: string,
+    updateData: Partial<IUser>,
+    avatarFile?: Express.Multer.File,
+  ) {
+    if (avatarFile) {
+      if (!avatarFile.mimetype.startsWith('image/')) {
+        throw new Error('Only image files are allowed');
+      }
+      const uploadedImage: UploadApiResponse =
+        await new Promise((resolve, reject) => {
+          // Create a Cloudinary upload stream and handle the response in the callback
+          const uploadStream =
+            cloudinary.uploader.upload_stream(
+              {
+                folder: 'todo-app/avatars',
+                resource_type: 'image',
+                filename_override: avatarFile.originalname,
+                use_filename: true,
+                unique_filename: false,
+              },
+              (error, result) => {
+                if (error || !result) return reject(error);
+                resolve(result);
+              },
+            );
+          // Convert the buffer to a stream and pipe it to Cloudinary
+          streamifier
+            .createReadStream(avatarFile.buffer)
+            .pipe(uploadStream);
+        });
+      if (updateData?.avatarPublicId)
+        await cloudinary.uploader.destroy(
+          updateData.avatarPublicId,
+        );
+      updateData.avatarUrl = uploadedImage.secure_url;
+      updateData.avatarPublicId = uploadedImage.public_id;
+    }
+    if (updateData.password) {
+      const hashedPassword = await bcrypt.hash(
+        updateData.password,
+        10,
+      );
+      updateData.password = hashedPassword;
+    }
+    const updatedUser =
+      await this.userModel.findByIdAndUpdate(
+        userId,
+        updateData,
+        // return the updated document instead of the old one
+        { new: true },
+      );
+    if (!updatedUser) {
+      throw new Error('User not found');
+    }
+    const updatedToken = jsonwebtoken.sign(
+      {
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+        avatarUrl: updatedUser?.avatarUrl,
+        avatarPublicId: updatedUser?.avatarPublicId,
+        _id: updatedUser._id,
+      },
+      process.env.JWT_SECRET_KEY as string,
+      { expiresIn: '7d' },
+    );
+    return {
+      token: updatedToken,
+      tokenExp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     };
   }
 }

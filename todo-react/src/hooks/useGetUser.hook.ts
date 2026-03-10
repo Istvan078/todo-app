@@ -8,7 +8,6 @@ const fetchTasks = async (): Promise<
 > => {
   const headers = setHeaders();
   try {
-    console.log("***Fetching tasks**...");
     const response = await fetch(`${import.meta.env.VITE_API_URL}tasks`, {
       method: "GET",
       headers: headers,

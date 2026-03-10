@@ -4,6 +4,8 @@ import { UserProfile } from "../userProfile/userProfile";
 import { CreateTaskForm } from "../createTaskForm/createTaskForm";
 import type { ITask } from "@/types/task.interface";
 import { XIcon } from "lucide-react";
+import { useUpdateUser } from "@/hooks/useUpdateUser.hook";
+import { useQueryClient } from "@tanstack/react-query";
 
 type TaskSidebarProps = {
   onClose: () => void;
@@ -13,6 +15,8 @@ type TaskSidebarProps = {
     firstName: string;
     lastName: string;
     email: string;
+    avatarUrl?: string;
+    avatarPublicId?: string;
   };
 };
 
@@ -22,6 +26,29 @@ export const TaskSidebar: FC<TaskSidebarProps> = ({
   isDesktop,
   user,
 }: TaskSidebarProps): ReactElement => {
+  const { mutate: updateUser } = useUpdateUser();
+  const queryClient = useQueryClient();
+
+  function handleUpdateUser(file: File) {
+    const formData = new FormData();
+    if(file)
+    formData.append("avatar", file);
+    if(user.avatarPublicId) formData.append("avatarPublicId", user.avatarPublicId);
+    updateUser(formData, {
+      onSuccess: (response) => {
+        // Update the token in localStorage with the new token from the response
+        // {token: string, tokenExp: number}
+        localStorage.setItem("token", JSON.stringify(response.data));
+        queryClient.invalidateQueries({
+          queryKey: ["fetchTasks"],
+          refetchType: "all",
+        });
+      },
+      onError: (error) => {
+        console.error("Failed to update user:", error);
+      },
+    });
+  }
   return (
     <section
       className={`fixed top-0 max-sm:left-0 sm:top-4 sm:right-4 w-full h-full sm:w-md`}
@@ -33,7 +60,10 @@ export const TaskSidebar: FC<TaskSidebarProps> = ({
             onClick={onClose}
           ></XIcon>
         )}
-        <UserProfile user={user}></UserProfile>
+        <UserProfile
+          onAvatarChange={handleUpdateUser}
+          user={user}
+        ></UserProfile>
         <CreateTaskForm
           editTaskData={editTaskData}
           onCreated={onClose}

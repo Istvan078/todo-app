@@ -3,6 +3,8 @@ export interface IUser {
   lastName: string;
   email: string;
   password: string;
+  avatarUrl?: string;
+  avatarPublicId?: string;
 }
 
 export interface IUserWithIdAndCreds
@@ -12,7 +14,14 @@ export interface IUserWithIdAndCreds
 }
 
 export interface IUserCredentials
-  extends Pick<IUser, 'firstName' | 'lastName' | 'email'> {
+  extends Pick<
+    IUser,
+    | 'firstName'
+    | 'lastName'
+    | 'email'
+    | 'avatarUrl'
+    | 'avatarPublicId'
+  > {
   _id: string;
   token?: string;
 }

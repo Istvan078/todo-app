@@ -9,6 +9,17 @@ import {
 } from './user.interface';
 import { createUserValidator } from './validators/createUser.validator';
 import { loginUserValidator } from './validators/loginUser.validator';
+import { updateUserValidator } from './validators/updateUser.validator';
+import multer from 'multer';
+import { verifyToken } from '../middleware/verifyToken.middleware';
+
+const upload: multer.Multer = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 15 * 1024 * 1024, // 15 MB
+  },
+});
+
 @injectable()
 export class UsersRouter {
   public router: Router;
@@ -61,6 +72,31 @@ export class UsersRouter {
               res,
             );
           res.status(StatusCodes.CREATED).json(user);
+        } else {
+          res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(result.array());
+        }
+      },
+    );
+
+    this.router.patch(
+      '/update',
+      verifyToken,
+      upload.single('avatar'),
+      updateUserValidator,
+      async (
+        req: Request<{}, {}, FormData>,
+        res: Response,
+      ) => {
+        const result = validationResult(req);
+        if (result.isEmpty()) {
+          const updatedToken =
+            await this.usersController.handleUpdateUser(
+              req,
+              res,
+            );
+          res.status(StatusCodes.OK).json(updatedToken);
         } else {
           res
             .status(StatusCodes.BAD_REQUEST)

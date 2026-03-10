@@ -110,6 +110,8 @@ export class GetTasksProvider {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          avatarUrl: user?.avatarUrl,
+          avatarPublicId: user?.avatarPublicId,
         },
       },
     };
