@@ -9,4 +9,5 @@ export interface ITask {
   imageUrl?: string;
   imagePublicId?: string;
   isDaily: boolean;
+  updatedAt?: string;
 }

@@ -18,7 +18,6 @@ export const Login: FC = (): ReactElement => {
       { ...values },
       {
         onSuccess: (data) => {
-          console.log("Login successful:", data.data.token);
           const token = {
             token: data.data.token,
             tokenExp: data.data.tokenExp,

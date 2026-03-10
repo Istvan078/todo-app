@@ -206,7 +206,8 @@ export const Tasks: FC = (): ReactElement => {
                     "title" in item &&
                     "status" in item &&
                     "priority" in item &&
-                    "dueDate" in item,
+                    "dueDate" in item &&
+                    "updatedAt" in item,
                 ) &&
                 data.data.completed.map((task: any) => (
                   <Task
@@ -219,6 +220,7 @@ export const Tasks: FC = (): ReactElement => {
                     dueDate={task.dueDate}
                     imageUrl={task.imageUrl}
                     isDaily={task.isDaily}
+                    updatedAt={task.updatedAt}
                     onEdit={() => openEditTask(task)}
                   ></Task>
                 ))}

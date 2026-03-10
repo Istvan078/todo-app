@@ -260,7 +260,8 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           {status === "completed" && (
             <>
               <Badge className="justify-self-start self-end bg-green-800 text-gray-300 tracking-widest font-bold">
-                Completed
+                Completed on{" "}
+                {new Date(props.updatedAt || "").toLocaleDateString()}
               </Badge>
               <CheckIcon className="h-4 w-4 ml-auto text-green-500" />
             </>

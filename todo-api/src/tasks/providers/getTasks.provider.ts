@@ -77,6 +77,12 @@ export class GetTasksProvider {
         : a.dueDate.getTime() - b.dueDate.getTime(),
     );
 
+    tasks.completedTasks.sort((a: any, b: any) =>
+      pagination.order === 'asc'
+        ? a.updatedAt.getTime() - b.updatedAt.getTime()
+        : b.updatedAt.getTime() - a.updatedAt.getTime(),
+    );
+
     const totalTasksCount = tasks.tasks?.length;
     const completedTasksCount =
       tasks.completedTasks?.length;
