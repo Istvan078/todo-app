@@ -72,6 +72,11 @@ export const Tasks: FC = (): ReactElement => {
   }
 
   function logout() {
+    // For development purposes, as SW is not working in development, we can just remove the token and navigate to login page. In production, we will also unsubscribe from push notifications.
+    if ((process as any).env.NODE_ENV === "development") {
+      localStorage.removeItem("token");
+      navigate("/login", { replace: true });
+    }
     setIsLoggedOut(true);
   }
 

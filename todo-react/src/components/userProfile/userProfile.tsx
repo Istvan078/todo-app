@@ -33,10 +33,12 @@ export const UserProfile: FC<{
   return (
     <div className="flex flex-col w-full items-center pt-4">
       <div className="relative mb-4">
-        <Avatar className={cn("h-20", "w-20")}>
+        {/* make the picture size object-fit:cover */}
+        <Avatar className={cn("h-20", "w-20", "overflow-hidden")}>
           <AvatarImage
             src={user?.avatarUrl}
             alt={`${user?.firstName} ${user?.lastName}`}
+            className="h-full w-full object-cover"
           />
           <AvatarFallback
             className={`text-2xl font-semibold ${cn("bg-violet-600", "dark:bg-violet-600")}`}

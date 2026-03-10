@@ -11,7 +11,7 @@ export function setHeaders() {
     const parsedToken: Token = JSON.parse(token);
     if (parsedToken.tokenExp < new Date().getTime()) {
       localStorage.removeItem("token");
-      console.log("Token expired, please login again");
+      console.log("***SET HEADERS FUNCTION****");
     } else {
       commonHeaders.append("Content-Type", "application/json");
       commonHeaders.append("Authorization", `Bearer ${parsedToken.token}`);
