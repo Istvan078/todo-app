@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { LoginUserSchema } from "@/schemas/loginUser.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, type ReactElement } from "react";
 import { useForm } from "react-hook-form";
@@ -15,14 +14,15 @@ import type z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Link, useNavigate } from "react-router";
 import { useResetPassword } from "@/hooks/useResetPassword.hook";
+import { PasswordResetSchema } from "@/schemas/passwordReset.schema";
 
 export function ResetPasswordForm(): ReactElement {
   const navigate = useNavigate();
   const [isPasswordReset, setIsPasswordReset] = useState(false);
   const resetPasswordMutation = useResetPassword();
 
-  const form = useForm<z.infer<typeof LoginUserSchema>>({
-    resolver: zodResolver(LoginUserSchema),
+  const form = useForm<z.infer<typeof PasswordResetSchema>>({
+    resolver: zodResolver(PasswordResetSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -30,7 +30,7 @@ export function ResetPasswordForm(): ReactElement {
     },
   });
 
-  function onSubmit(values: z.infer<typeof LoginUserSchema>) {
+  function onSubmit(values: z.infer<typeof PasswordResetSchema>) {
     resetPasswordMutation.mutate(values, {
       onSuccess: () => {
         setIsPasswordReset(true);

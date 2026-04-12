@@ -11,7 +11,7 @@ const resetPassword = async (userCreds: ResetPasswordCreds) => {
     const response = await fetch(
       import.meta.env.VITE_API_URL + "users/reset-password",
       {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -19,6 +19,7 @@ const resetPassword = async (userCreds: ResetPasswordCreds) => {
       },
     );
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error: any) {
     throw new Error("Failed to reset password");
