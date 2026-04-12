@@ -7,7 +7,7 @@ import { useFetchTasks } from "@/hooks/useFetchTasks.hook";
 import type { ITask } from "@/types/task.interface";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
-import { LogOut, NotebookIcon } from "lucide-react";
+import { LogOut, NotebookIcon, RefreshCwIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { PushSettings } from "@/push/pushSettings";
 
@@ -25,7 +25,13 @@ function todaysDate() {
 
 // Function component, returns reactelement
 export const Tasks: FC = (): ReactElement => {
-  const { data }: { data: any } = useFetchTasks({});
+  const {
+    data,
+    refetch,
+    isFetching,
+  }: { data: any; refetch: () => void; isFetching: boolean } = useFetchTasks(
+    {},
+  );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [editTaskData, setEditTaskData] = useState<ITask | undefined>(
     undefined,
@@ -102,10 +108,16 @@ export const Tasks: FC = (): ReactElement => {
         <section className="lg:flex lg:flex-row w-full p-1 lg:p-4 gap-8 grid">
           <section className="lg:flex lg:basis-2/3 md:justify-start justify-center">
             <div className="flex flex-col lg:w-4/5 p-4">
-              <PushSettings
-                onUnsubscribed={handlePushUnsubscribed}
-                isLoggedOut={isLoggedOut}
-              ></PushSettings>
+              <div className="flex justify-between">
+                <PushSettings
+                  onUnsubscribed={handlePushUnsubscribed}
+                  isLoggedOut={isLoggedOut}
+                ></PushSettings>
+                <RefreshCwIcon
+                  onClick={refetch}
+                  className={isFetching ? "animate-spin" : ""}
+                ></RefreshCwIcon>
+              </div>
               <h1 className="text-white font-bold text-2xl mt-3 mb-3">
                 {`Task as on: ${todaysDate()}`}
               </h1>
