@@ -10,6 +10,14 @@ import { useNavigate } from "react-router";
 import { LogOut, NotebookIcon, RefreshCwIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { PushSettings } from "@/push/pushSettings";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Form, FormField } from "@/components/ui/form";
 
 function todaysDate() {
   const today = new Date();
@@ -40,6 +48,21 @@ export const Tasks: FC = (): ReactElement => {
   const [showDailyTasks, setShowDailyTasks] = useState(false);
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [sortBy, setSortBy] = useState("");
+  const sortedTodoTasks = [...(data?.data?.todo || [])].sort((a, b) => {
+    if (sortBy === "dueDate") {
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+    }
+    if (sortBy === "priority") {
+      const priorityOrder: Record<string, number> = {
+        high: 1,
+        normal: 2,
+        low: 3,
+      };
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
+    }
+    return 0;
+  });
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -93,6 +116,8 @@ export const Tasks: FC = (): ReactElement => {
       navigate("/login", { replace: true });
     }
   }
+
+  function sortTasks() {}
 
   return (
     <>
@@ -182,11 +207,23 @@ export const Tasks: FC = (): ReactElement => {
                   Logout
                 </button>
               </div>
+              <div className="flex justify-end mb-2">
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    <SelectItem value="dueDate">Due Date</SelectItem>
+                    <SelectItem value="priority">Priority</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               {data?.data &&
                 !showCompletedTasks &&
                 !showDailyTasks &&
                 Array.isArray(data.data.todo) &&
-                data.data.todo.every(
+                sortedTodoTasks.every(
                   (item: any): item is ITask =>
                     "_id" in item &&
                     "title" in item &&
@@ -194,7 +231,7 @@ export const Tasks: FC = (): ReactElement => {
                     "priority" in item &&
                     "dueDate" in item,
                 ) &&
-                data.data.todo.map((task: any) => (
+                sortedTodoTasks.map((task: any) => (
                   <Task
                     key={task._id}
                     _id={task._id}
