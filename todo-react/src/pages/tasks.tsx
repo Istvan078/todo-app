@@ -117,8 +117,6 @@ export const Tasks: FC = (): ReactElement => {
     }
   }
 
-  function sortTasks() {}
-
   return (
     <>
       {!data && (
