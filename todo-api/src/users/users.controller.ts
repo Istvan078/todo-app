@@ -60,4 +60,17 @@ export class UsersController {
       throw new Error(err);
     }
   }
+
+  public async handleResetPassword(
+    req: Request,
+    res: Response,
+  ) {
+    const validatedData = matchedData(req);
+    try {
+      await this.usersService.resetPassword(validatedData);
+      return { message: 'Password reset successful' };
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
 }

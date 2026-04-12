@@ -104,5 +104,29 @@ export class UsersRouter {
         }
       },
     );
+
+    this.router.patch(
+      '/reset-password',
+      updateUserValidator,
+      async (
+        req: Request<{}, {}, FormData>,
+        res: Response,
+      ) => {
+        const result = validationResult(req);
+        if (result.isEmpty()) {
+          await this.usersController.handleResetPassword(
+            req,
+            res,
+          );
+          res
+            .status(StatusCodes.OK)
+            .json({ message: 'Password reset successful' });
+        } else {
+          res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(result.array());
+        }
+      },
+    );
   }
 }

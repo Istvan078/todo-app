@@ -4,55 +4,55 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { LoginUserSchema } from "@/schemas/loginUser.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, type ReactElement } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Link, useNavigate } from "react-router";
+import { useResetPassword } from "@/hooks/useResetPassword.hook";
 
-type Props = {
-  onSubmit: (values: any) => void;
-  isLoading: boolean;
-};
-
-export function LoginForm({ onSubmit }: Props): ReactElement {
+export function ResetPasswordForm(): ReactElement {
   const navigate = useNavigate();
+  const [isPasswordReset, setIsPasswordReset] = useState(false);
+  const resetPasswordMutation = useResetPassword();
 
   const form = useForm<z.infer<typeof LoginUserSchema>>({
     resolver: zodResolver(LoginUserSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmedPassword: "",
     },
   });
 
+  function onSubmit(values: z.infer<typeof LoginUserSchema>) {
+    resetPasswordMutation.mutate(values, {
+      onSuccess: () => {
+        setIsPasswordReset(true);
+      },
+      onError: (error) => {
+        console.error("Failed to reset password:", error);
+      },
+    });
+  }
+
   useEffect(() => {
-    const autoLoginToken = localStorage.getItem("token");
-    if (!autoLoginToken) return;
-    if (autoLoginToken) {
-      const token = JSON.parse(autoLoginToken);
-      if (token.tokenExp > new Date().getTime()) {
-        navigate("/", { replace: true });
-      } else {
-        localStorage.removeItem("token");
-        console.log("Token expired, please login again");
-      }
+    if (isPasswordReset) {
+      navigate("/login");
     }
-  }, [navigate]);
+  }, [isPasswordReset, navigate]);
 
   return (
     <div className="flex flex-col gap-6 h-screen items-center justify-center">
       <Card className="w-full sm:w-md">
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your email and new password below to reset your password
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -82,32 +82,43 @@ export function LoginForm({ onSubmit }: Props): ReactElement {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <FieldLabel htmlFor="password">New password</FieldLabel>
                     <FormControl>
                       <Input
                         id="password"
                         type="password"
                         {...field}
-                        placeholder="your password"
+                        placeholder="your new password"
                         required
                       />
                     </FormControl>
-                    {/* <a
-                      href="#"
-                      className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                    >
-                      Forgot your password?
-                    </a> */}
+                  </FormItem>
+                )}
+              ></FormField>
+              <FormField
+                control={form.control}
+                name="confirmedPassword"
+                render={({ field }) => (
+                  <FormItem className="mt-3">
+                    <FieldLabel htmlFor="confirm-password">
+                      Confirm new password
+                    </FieldLabel>
+                    <FormControl>
+                      <Input
+                        id="confirm-password"
+                        type="password"
+                        {...field}
+                        placeholder="confirm your new password"
+                        required
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               ></FormField>
               <Field className="my-4">
-                <Button type="submit">Login</Button>
-                {/* <Button variant="outline" type="button">
-                  Login with Google
-                </Button> */}
+                <Button type="submit">Reset Password</Button>
                 <FieldDescription className="text-center">
-                  Forgot password? <Link to="/reset-password">Reset here</Link>
+                  Remembered your password? <Link to="/login">Login here</Link>
                 </FieldDescription>
                 <FieldDescription className="text-center">
                   Don't have an account? <Link to="/signup">Sign up</Link>

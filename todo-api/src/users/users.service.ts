@@ -163,4 +163,21 @@ export class UsersService {
       tokenExp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     };
   }
+
+  public async resetPassword(data: Partial<IUser>) {
+    if (data?.password) {
+      const user = await this.userModel.findOne({
+        email: data.email,
+      });
+      if (!user) {
+        throw new Error('User not found');
+      }
+      const hashedPassword = await bcrypt.hash(
+        data.password,
+        10,
+      );
+      user.password = hashedPassword;
+      await user.save();
+    }
+  }
 }

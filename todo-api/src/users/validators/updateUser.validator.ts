@@ -38,6 +38,26 @@ export const updateUserValidator = checkSchema({
         'Password must be at least 6 characters long',
     },
   },
+  confirmedPassword: {
+    optional: true,
+    isString: true,
+    isLength: {
+      options: { min: 6 },
+      errorMessage:
+        'Confirm password must be at least 6 characters long',
+    },
+    custom: {
+      options: (value, { req }) => {
+        if (
+          req.body.password &&
+          value !== req.body.password
+        ) {
+          throw new Error('Passwords do not match');
+        }
+        return true;
+      },
+    },
+  },
   avatarUrl: {
     optional: true,
     isURL: {
