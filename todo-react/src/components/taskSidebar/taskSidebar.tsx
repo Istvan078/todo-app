@@ -19,6 +19,7 @@ type TaskSidebarProps = {
     avatarUrl?: string;
     avatarPublicId?: string;
   };
+  onFormSubmit: () => void;
 };
 
 export const TaskSidebar: FC<TaskSidebarProps> = ({

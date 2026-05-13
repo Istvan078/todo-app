@@ -108,6 +108,7 @@ export const CreateTaskForm = ({
         );
       },
       onError: (error: any) => {
+        console.error("Failed to submit task:", error);
         setIsSubmitting(false);
       },
     };
