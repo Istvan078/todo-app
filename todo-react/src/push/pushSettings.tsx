@@ -48,6 +48,7 @@ export function PushSettings({
             onSuccess: async () => {
               setIsSubscribed(false);
               onUnsubscribed(true);
+              setLoading(false);
             },
           },
         );
@@ -84,6 +85,7 @@ export function PushSettings({
           onSuccess: async () => {
             await subscription.unsubscribe();
             setIsSubscribed(false);
+            setLoading(false);
           },
         });
       }
