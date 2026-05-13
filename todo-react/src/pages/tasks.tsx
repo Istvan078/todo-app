@@ -47,6 +47,7 @@ export const Tasks: FC = (): ReactElement => {
   const [showDailyTasks, setShowDailyTasks] = useState(false);
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState("");
   const sortedTodoTasks = [...(data?.data?.todo || [])].sort((a, b) => {
     if (sortBy === "dueDate") {
@@ -108,13 +109,14 @@ export const Tasks: FC = (): ReactElement => {
   }
 
   function logout() {
+    setIsLoading(true);
     // For development purposes, as SW is not working in development, we can just remove the token and navigate to login page. In production, we will also unsubscribe from push notifications.
-
     if (import.meta.env.MODE === "development") {
       localStorage.removeItem("token");
       navigate("/login", { replace: true });
     }
     setIsLoggedOut(true);
+    setIsLoading(false);
   }
 
   function handlePushUnsubscribed(isUnsubscribed: boolean) {
@@ -209,21 +211,27 @@ export const Tasks: FC = (): ReactElement => {
                 </Button>
                 <button onClick={logout} className="flex items-center gap-2">
                   <LogOut className="h-4 w-4" />
-                  Logout
+                  {isLoading ? (
+                    <Spinner className="h-4 w-4"></Spinner>
+                  ) : (
+                    "Logout"
+                  )}
                 </button>
               </div>
-              <div className="flex justify-end mb-2">
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
+              {!showCompletedTasks && !showDailyTasks && (
+                <div className="flex justify-end mb-2">
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
 
-                  <SelectContent>
-                    <SelectItem value="dueDate">Due Date</SelectItem>
-                    <SelectItem value="priority">Priority</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                    <SelectContent>
+                      <SelectItem value="dueDate">Due Date</SelectItem>
+                      <SelectItem value="priority">Priority</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               {data?.data &&
                 !showCompletedTasks &&
                 !showDailyTasks &&

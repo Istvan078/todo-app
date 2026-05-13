@@ -61,6 +61,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
   }, [status, isDoneToday]);
 
   function handleProgressChange(value: boolean) {
+    setLoading(true);
     setProgress(value);
     if (_id) {
       formData.set("status", value ? "inProgress" : "todo");
@@ -76,11 +77,13 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           body: `The task "${title}" is now ${value ? "in progress" : "set to to-do"} at ${new Date().toLocaleTimeString()}`,
           url: window.location.origin,
         });
+        setLoading(false);
       },
     });
   }
 
   function handleTaskCompleted() {
+    setLoading(true);
     if (_id) {
       formData.set("status", "completed");
     }
@@ -95,11 +98,13 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           body: `The task "${title}" has been completed! at ${new Date().toLocaleTimeString()}`,
           url: window.location.origin,
         });
+        setLoading(false);
       },
     });
   }
 
   function handleSetIsDoneToday(value: boolean) {
+    setLoading(true);
     if (_id) {
       formData.set("isDoneToday", String(value));
       formData.set("doneTodayAt", new Date().toISOString());
@@ -115,6 +120,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           body: `The task "${title}" has been marked as done for today at ${new Date().toLocaleTimeString()}`,
           url: window.location.origin,
         });
+        setLoading(false);
       },
     });
   }
@@ -264,17 +270,27 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           {(status === "todo" || status === "inProgress") && (
             <>
               <div className="flex flex-row items-center">
-                <Switch
-                  id="in-progress"
-                  checked={progress}
-                  onCheckedChange={handleProgressChange}
-                ></Switch>
+                {!isLoading && (
+                  <Switch
+                    id="in-progress"
+                    checked={progress}
+                    onCheckedChange={handleProgressChange}
+                  ></Switch>
+                )}
+
+                {isLoading && <Spinner className="w-6 h-6"></Spinner>}
+
                 <Label className="ml-4" htmlFor="in-progress">
                   In Progress
                 </Label>
               </div>
               {!isDaily && (
-                <Button onClick={handleTaskCompleted}>Completed</Button>
+                <>
+                  <Button onClick={handleTaskCompleted}>
+                    {!isLoading && "Completed"}
+                    {isLoading && <Spinner className="w-6 h-6"></Spinner>}
+                  </Button>
+                </>
               )}
             </>
           )}
@@ -288,8 +304,13 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
               }
               onClick={() => handleSetIsDoneToday(true)}
             >
-              {!isDoneToday ? "Done Today?" : "Done for Today"}
-              {isDoneToday && (
+              {!isLoading
+                ? !isDoneToday
+                  ? "Done Today?"
+                  : "Done for Today"
+                : ""}
+              {isLoading && <Spinner className="w-6 h-6"></Spinner>}
+              {!isLoading && isDoneToday && (
                 <CheckCircleIcon className="text-white"></CheckCircleIcon>
               )}
             </Button>

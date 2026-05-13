@@ -37,6 +37,7 @@ import type { ITask } from "@/types/task.interface";
 import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 import { useSendPush } from "@/hooks/useSendPush.hook";
 import { Switch } from "../ui/switch";
+import { Spinner } from "../ui/spinner";
 
 const defaultFormValues: Partial<z.infer<typeof CreateTaskSchema>> = {
   title: "",
@@ -354,7 +355,12 @@ export const CreateTaskForm = ({
               )}
             ></FormField>
             <Button disabled={isSubmitting} type="submit">
-              {editTaskData ? "Update Task" : "Create Task"}
+              {!isSubmitting
+                ? editTaskData
+                  ? "Update Task"
+                  : "Create Task"
+                : "Submitting..."}
+              {isSubmitting && <Spinner className="w-6 h-6"></Spinner>}
             </Button>
           </div>
         </form>
