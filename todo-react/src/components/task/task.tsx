@@ -35,6 +35,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     imageUrl,
     isDaily,
     isDoneToday,
+    isOverdue,
   } = props;
   const { onEdit } = props;
   const [progress, setProgress] = useState(false);
@@ -220,23 +221,38 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           )}
           {status !== "completed" && (
             <div className="flex col-start-4 col-end-5 justify-self-end">
-              <Badge className="mr-2" variant="outline">
+              <Badge
+                className={`mr-2 ${isOverdue ? "bg-red-800/40 uppercase tracking-wide font-bold border-red-800" : ""}`}
+                variant="outline"
+              >
                 {!isDaily ? formattedDate : "Daily"}
               </Badge>
-              {priority === "normal" && (
-                <Badge className="bg-sky-800" variant="outline">
-                  {priority}
+              {isOverdue === true && (
+                <Badge
+                  className="bg-red-800 uppercase tracking-wide font-bold"
+                  variant="outline"
+                >
+                  Overdue
                 </Badge>
               )}
-              {priority === "high" && (
-                <Badge className="bg-red-800" variant="outline">
-                  {priority}
-                </Badge>
-              )}
-              {priority === "low" && (
-                <Badge className="bg-green-800" variant="outline">
-                  {priority}
-                </Badge>
+              {!isOverdue && (
+                <>
+                  {priority === "normal" && (
+                    <Badge className="bg-sky-800" variant="outline">
+                      {priority}
+                    </Badge>
+                  )}
+                  {priority === "high" && (
+                    <Badge className="bg-red-800" variant="outline">
+                      {priority}
+                    </Badge>
+                  )}
+                  {priority === "low" && (
+                    <Badge className="bg-green-800" variant="outline">
+                      {priority}
+                    </Badge>
+                  )}
+                </>
               )}
             </div>
           )}

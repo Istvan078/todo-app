@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 function todaysDate() {
   const today = new Date();
@@ -49,20 +50,36 @@ export const Tasks: FC = (): ReactElement => {
   const [isDesktop, setIsDesktop] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState("");
-  const sortedTodoTasks = [...(data?.data?.todo || [])].sort((a, b) => {
-    if (sortBy === "dueDate") {
-      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-    }
-    if (sortBy === "priority") {
-      const priorityOrder: Record<string, number> = {
-        high: 1,
-        normal: 2,
-        low: 3,
-      };
-      return priorityOrder[a.priority] - priorityOrder[b.priority];
-    }
-    return 0;
-  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const sortedTodoTasks = [...(data?.data?.todo || [])]
+    .sort((a, b) => {
+      if (sortBy === "dueDate") {
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      }
+      if (sortBy === "priority") {
+        const priorityOrder: Record<string, number> = {
+          high: 1,
+          normal: 2,
+          low: 3,
+        };
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      }
+      return 0;
+    })
+    .filter((task) =>
+      `${task.title} ${task.description}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
+    )
+    .map((task: any) => {
+      if (
+        new Date(task.dueDate).getTime() < new Date().getTime() &&
+        task.status !== "completed"
+      ) {
+        task.isOverdue = true;
+      }
+      return task;
+    });
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -219,7 +236,12 @@ export const Tasks: FC = (): ReactElement => {
                 </button>
               </div>
               {!showCompletedTasks && !showDailyTasks && (
-                <div className="flex justify-end mb-2">
+                <div className="flex justify-end gap-1 mb-2">
+                  <Input
+                    placeholder="Search task..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                   <Select value={sortBy} onValueChange={setSortBy}>
                     <SelectTrigger>
                       <SelectValue placeholder="Sort by" />
@@ -256,6 +278,7 @@ export const Tasks: FC = (): ReactElement => {
                     imageUrl={task.imageUrl}
                     isDaily={task.isDaily}
                     onEdit={() => openEditTask(task)}
+                    isOverdue={task.isOverdue}
                   ></Task>
                 ))}
 
