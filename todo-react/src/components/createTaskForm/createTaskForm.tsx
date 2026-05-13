@@ -38,24 +38,31 @@ import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 import { useSendPush } from "@/hooks/useSendPush.hook";
 import { Switch } from "../ui/switch";
 
+const defaultFormValues: Partial<z.infer<typeof CreateTaskSchema>> = {
+  title: "",
+  description: "",
+  status: "todo",
+  priority: "normal",
+  dueDate: undefined,
+  isDaily: false,
+  image: undefined,
+};
 export const CreateTaskForm = ({
   onCreated,
   editTaskData,
+  onFormSubmit,
 }: {
   onCreated: () => void;
   editTaskData?: ITask;
+  onFormSubmit: () => void;
 }) => {
   const form = useForm<z.infer<typeof CreateTaskSchema>>({
     resolver: zodResolver(CreateTaskSchema),
-    defaultValues: {
-      status: "todo",
-      priority: "normal",
-      isDaily: false,
-    },
+    defaultValues: defaultFormValues,
   });
 
-  const { mutate: updateTask, isSuccess: isUpdateSuccess } = useUpdateTask();
-  const { mutate: createTask, isSuccess: isCreateSuccess } = useCreateTask();
+  const { mutate: updateTask } = useUpdateTask();
+  const { mutate: createTask } = useCreateTask();
   const { mutate: sendPush } = useSendPush();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -80,6 +87,7 @@ export const CreateTaskForm = ({
 
     const commonOptions = {
       onSuccess: () => {
+        const taskName = editTaskData ? editTaskData.title : values.title;
         queryClient.invalidateQueries({
           queryKey: ["fetchTasks"],
           refetchType: "all",
@@ -87,15 +95,19 @@ export const CreateTaskForm = ({
         onCreated();
         setIsSubmitting(false);
         sendPush({
-          title: editTaskData ? "Task Updated" : "New Task Created",
-          body: `Task "${values.title}" has been ${
-            editTaskData ? "updated" : "created"
+          title: editTaskData?._id ? "Task Updated" : "New Task Created",
+          body: `Task "${taskName}" has been ${
+            editTaskData?._id ? "updated" : "created"
           }`,
           url: window.location.origin,
         });
+        form.reset(defaultFormValues);
+        onFormSubmit();
+        toast(
+          `Task "${taskName}" ${editTaskData?._id ? "Updated" : "Created"} Successfully`,
+        );
       },
       onError: (error: any) => {
-        console.log("Error creating/updating task:", error);
         setIsSubmitting(false);
       },
     };
@@ -121,14 +133,7 @@ export const CreateTaskForm = ({
         isDaily: editTaskData.isDaily,
       });
     }
-    if (!isUpdateSuccess && !isCreateSuccess) return;
-    if (isCreateSuccess) {
-      toast("New Task Created");
-    } else if (isUpdateSuccess) {
-      toast("Task Updated");
-    }
-    form.reset();
-  }, [isUpdateSuccess, isCreateSuccess, editTaskData, form]);
+  }, [editTaskData, form]);
 
   return (
     <div className="overflow-auto">
@@ -283,7 +288,12 @@ export const CreateTaskForm = ({
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
-                        animate={true}
+                        classNames={{
+                          day_button: "cursor-pointer",
+                          disabled: "cursor-not-allowed opacity-50",
+                          button_next: "cursor-pointer",
+                          button_previous: "cursor-pointer",
+                        }}
                         mode="single"
                         selected={field.value}
                         onSelect={(date) => {

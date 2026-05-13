@@ -99,6 +99,14 @@ export const Tasks: FC = (): ReactElement => {
     setIsSidebarOpen(true);
   }
 
+  function handleTaskFormFinished() {
+    setEditTaskData(undefined);
+
+    if (!isDesktop) {
+      setIsSidebarOpen(false);
+    }
+  }
+
   function logout() {
     // For development purposes, as SW is not working in development, we can just remove the token and navigate to login page. In production, we will also unsubscribe from push notifications.
 
@@ -312,6 +320,7 @@ export const Tasks: FC = (): ReactElement => {
                 editTaskData={editTaskData}
                 isDesktop={isDesktop}
                 user={data.meta.user}
+                onFormSubmit={handleTaskFormFinished}
               ></TaskSidebar>
             )}
           </section>

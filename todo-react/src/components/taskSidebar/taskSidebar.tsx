@@ -26,6 +26,7 @@ export const TaskSidebar: FC<TaskSidebarProps> = ({
   editTaskData,
   isDesktop,
   user,
+  onFormSubmit,
 }: TaskSidebarProps): ReactElement => {
   const { mutate: updateUser } = useUpdateUser();
   const queryClient = useQueryClient();
@@ -80,6 +81,7 @@ export const TaskSidebar: FC<TaskSidebarProps> = ({
         <CreateTaskForm
           editTaskData={editTaskData}
           onCreated={onClose}
+          onFormSubmit={onFormSubmit}
         ></CreateTaskForm>
         <div className="spacer-div"></div>
       </Card>
