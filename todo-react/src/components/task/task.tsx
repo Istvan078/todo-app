@@ -239,20 +239,20 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           <p>{description}</p>
           {imageUrl && (
             <div className="grid grid-cols-4 grid-rows-1">
-              <img
-                className="col-start-1 col-end-5 row-start-1 row-end-2 rounded-md"
-                width="100%"
-                height="auto"
-                src={imageUrl}
-                alt={title}
-              />
+              <div className="col-start-1 col-end-5 row-start-1 row-end-2 w-full overflow-hidden rounded-md border border-slate-700 bg-slate-900 overflow-y-auto max-h-170">
+                <img
+                  className="h-auto w-full rounded-md"
+                  src={imageUrl}
+                  alt={title}
+                />
+              </div>
               {isLoading && (
                 <Spinner className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-2 mt-2"></Spinner>
               )}
               {!isLoading && (
                 <XIcon
                   onClick={openImageDeleteDialog}
-                  className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-1 mt-1 cursor-pointer text-gray-300 font-black"
+                  className="col-start-4 col-end-5 row-start-1 row-end-2 justify-self-end mr-1 mt-1 cursor-pointer text-red-400/70 font-black hover:text-gray-300 hover:bg-gray-500 size-10 bg-gray-700/70 rounded-full p-1"
                 ></XIcon>
               )}
             </div>
