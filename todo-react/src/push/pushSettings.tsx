@@ -1,3 +1,4 @@
+import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { useCreateSub } from "@/hooks/useCreateSub.hook";
 import { useFetchPubKey } from "@/hooks/useFetchPubKey.hook";
@@ -23,6 +24,7 @@ export function PushSettings({
   const { mutate: unsubscribe } = useUnsubscribe();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [endpoint, setEndpoint] = useState("");
+  const [isItLoading, setLoading] = useState(false);
   const { data: subExists } = useFetchSub(endpoint);
 
   const checkIsSubscribed = async () => {
@@ -54,6 +56,7 @@ export function PushSettings({
   }, [isLoggedOut, endpoint, subExists]);
 
   const subForPushNotif = async () => {
+    setLoading(true);
     if (!isSubscribed) {
       const permission = await Notification.requestPermission();
       if (permission !== "granted") throw new Error("Permission not granted");
@@ -67,6 +70,7 @@ export function PushSettings({
       mutate(subBody, {
         onSuccess: () => {
           setIsSubscribed(true);
+          setLoading(false);
         },
       });
     } else {
@@ -90,15 +94,27 @@ export function PushSettings({
   if (error) return <div>Error: {(error as Error).message}</div>;
 
   return (
-    <div>
-      <Switch
-        id="subscribeSwitch"
-        checked={isSubscribed}
-        onCheckedChange={subForPushNotif}
-        className="data-[state=checked]:!bg-purple-800 data-[state=unchecked]:!bg-gray-700"
-      ></Switch>
+    <div className="flex items-center">
+      {isItLoading && <Spinner className="w-6 h-6"></Spinner>}
+      {!isItLoading && (
+        <Switch
+          id="subscribeSwitch"
+          checked={isSubscribed}
+          onCheckedChange={subForPushNotif}
+          className="data-[state=checked]:!bg-purple-800 data-[state=unchecked]:!bg-gray-700"
+        ></Switch>
+      )}
       <label htmlFor="subscribeSwitch" className="ml-2">
-        {isSubscribed ? "Disable Notifications" : "Enable Notifications"}
+        {!isItLoading
+          ? isSubscribed
+            ? "Disable Notifications"
+            : "Enable Notifications"
+          : ""}
+        {isItLoading && !isSubscribed
+          ? "Enabling..."
+          : isItLoading && isSubscribed
+            ? "Disabling..."
+            : ""}
       </label>
     </div>
   );
