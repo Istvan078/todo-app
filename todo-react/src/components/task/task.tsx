@@ -190,15 +190,15 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
         dialogDescription={dialogDescription}
       ></TaskDialog>
       <Card
-        className={`${status === "completed" ? "bg-slate-800 gap-3" : ""} w-full mb-8 py-2 sm:py-6`}
+        className={`${status === "completed" ? "bg-slate-800 gap-3" : ""} w-full mb-8 py-2 sm:pb-4`}
       >
-        <CardHeader className="grid grid-cols-4 grid-rows-2 gap-y-5 sm:flex sm:flex-row sm:justify-between px-3">
+        <CardHeader className="grid grid-cols-4 grid-rows-2 sm:flex sm:flex-row sm:justify-between px-3">
           <X
             onClick={openTaskDeleteDialog}
-            className={`${status === "completed" ? "col-start-5 col-end-6" : "col-start-1 col-end-2"} self-center h-4 w-4`}
+            className={`${status === "completed" ? "col-start-5 col-end-6 sm:order-2" : "col-start-1 col-end-2 self-start mt-1 sm:self-center sm:mt-0"} self-center h-4 w-4`}
           />
           <CardTitle
-            className={`${status === "completed" ? "row-start-1 row-end-3" : "row-start-2 row-end-3"} col-start-1 col-end-4 sm:basis-2/3 sm:leading-8 self-center`}
+            className={`${status === "completed" ? "row-start-1 row-end-3 sm:order-1" : "row-start-2 row-end-3 self-center"} col-start-1 col-end-4 sm:basis-2/3 sm:leading-8 `}
           >
             {title}
           </CardTitle>
