@@ -226,7 +226,10 @@ export const Tasks: FC = (): ReactElement => {
                 <Button onClick={showTaskSidebar}>
                   <NotebookIcon className="h-4 w-4" /> New Task
                 </Button>
-                <button onClick={logout} className="flex items-center gap-2">
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-2 cursor-pointer text-sm"
+                >
                   <LogOut className="h-4 w-4" />
                   {isLoading ? (
                     <Spinner className="h-4 w-4"></Spinner>
