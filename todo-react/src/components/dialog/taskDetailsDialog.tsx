@@ -24,6 +24,7 @@ type TaskDetailsDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onEdit: (task: ITask) => void;
+  setIsImagePreviewOpen: (isOpen: boolean) => void;
 };
 
 export const TaskDetailsDialog: FC<TaskDetailsDialogProps> = ({
@@ -31,6 +32,7 @@ export const TaskDetailsDialog: FC<TaskDetailsDialogProps> = ({
   isOpen,
   onClose,
   onEdit,
+  setIsImagePreviewOpen,
 }): JSX.Element | null => {
   if (!task) return null;
 
@@ -112,9 +114,10 @@ export const TaskDetailsDialog: FC<TaskDetailsDialogProps> = ({
             {task.imageUrl ? (
               <div className="h-100 overflow-y-auto rounded-xl border border-slate-800">
                 <img
+                  onClick={() => setIsImagePreviewOpen(true)}
                   src={task.imageUrl}
                   alt={task.title}
-                  className="w-full object-cover"
+                  className="w-full object-cover cursor-pointer"
                 />
               </div>
             ) : (

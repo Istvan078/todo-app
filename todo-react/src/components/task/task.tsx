@@ -226,6 +226,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
         isOpen={isTaskDetailsDialogOpen}
         onClose={() => setIsTaskDetailsDialogOpen(false)}
         onEdit={setIsTaskDetailsDialogOpen.bind(null, false) && onEdit}
+        setIsImagePreviewOpen={setIsImagePreviewOpen}
       ></TaskDetailsDialog>
       <ImagePreviewDialog
         imageUrl={imageUrl}
