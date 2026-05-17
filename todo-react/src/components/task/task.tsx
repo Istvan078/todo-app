@@ -20,6 +20,7 @@ import { useDeleteTaskImage } from "@/hooks/useDeleteTaskImage.hook";
 import { Spinner } from "@/components/ui/spinner";
 import { TaskDialog } from "../dialog/dialog";
 import { TaskDetailsDialog } from "../dialog/taskDetailsDialog";
+import { ImagePreviewDialog } from "../dialog/imagePreviewDialog";
 
 export const Task: FC<ITask & { onEdit: () => void }> = (
   props: ITask & { onEdit: () => void },
@@ -50,6 +51,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
   const [dialogConfirmText, setDialogConfirmText] = useState("");
   const [dialogDescription, setDialogDescription] = useState("");
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
   const [buttonVariant, setButtonVariant] = useState<"destructive" | "default">(
     "destructive",
   );
@@ -225,6 +227,11 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
         onClose={() => setIsTaskDetailsDialogOpen(false)}
         onEdit={setIsTaskDetailsDialogOpen.bind(null, false) && onEdit}
       ></TaskDetailsDialog>
+      <ImagePreviewDialog
+        imageUrl={imageUrl}
+        isOpen={isImagePreviewOpen}
+        onClose={() => setIsImagePreviewOpen(false)}
+      ></ImagePreviewDialog>
       <Card
         className={`${status === "completed" ? "bg-slate-800 gap-3" : ""} w-full mb-8 py-2 sm:pb-4`}
       >
@@ -302,7 +309,8 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
             <div className="grid grid-cols-4 grid-rows-1">
               <div className="col-start-1 col-end-5 row-start-1 row-end-2 w-full overflow-hidden rounded-md border border-slate-700 bg-slate-900 overflow-y-auto max-h-170">
                 <img
-                  className="h-auto w-full rounded-md"
+                  onClick={() => setIsImagePreviewOpen(true)}
+                  className="h-auto w-full rounded-md object-cover cursor-pointer"
                   src={imageUrl}
                   alt={title}
                 />
