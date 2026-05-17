@@ -14,6 +14,10 @@ export default defineConfig({
       srcDir: "src",
       filename: "sw.ts",
       registerType: "prompt",
+      injectRegister: "auto",
+      workbox: {
+        cleanupOutdatedCaches: true,
+      },
       manifest: {
         name: "Todo App",
         short_name: "Todo",
