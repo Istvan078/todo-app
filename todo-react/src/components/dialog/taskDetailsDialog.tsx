@@ -124,12 +124,16 @@ export const TaskDetailsDialog: FC<TaskDetailsDialogProps> = ({
                       size={18}
                       className="text-slate-500 cursor-grab"
                     />
-                    <Checkbox checked={subtask.completed} disabled />
+                    <Checkbox
+                      className="hover:border-orange-300 border-slate-500 data-[state=checked]:border-green-400 data-[state=checked]:bg-green-600 data-[state=checked]:text-green-600"
+                      checked={subtask.completed}
+                      disabled
+                    />
 
                     <span
                       className={
                         subtask.completed
-                          ? "text-slate-500 line-through"
+                          ? "text-green-500 line-through"
                           : "text-slate-200"
                       }
                     >
