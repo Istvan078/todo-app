@@ -73,6 +73,19 @@ const taskSchema: Schema<ITask> = new Schema(
       type: Date,
       optional: true,
     },
+    subtasks: [
+      {
+        title: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        completed: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
   },
   // SCHEMA OPTIONS OBJECT
   {

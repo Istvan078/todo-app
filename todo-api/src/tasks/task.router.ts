@@ -12,6 +12,7 @@ import { StatusCodes } from 'http-status-codes';
 import { updateTaskValidator } from './validators/updateTask.validator';
 import { deleteTaskValidator } from './validators/deleteTask.validator';
 import multer from 'multer';
+import parseSubtasks from '../middleware/parseSubTasks';
 
 const upload: multer.Multer = multer({
   storage: multer.memoryStorage(),
@@ -56,12 +57,14 @@ export class TasksRouter {
     this.router.post(
       '/create',
       upload.single('image'),
+      parseSubtasks,
       createTaskValidator,
       async (
         req: Request<{}, {}, ITask>,
         res: Response,
       ) => {
         const result = validationResult(req);
+        console.log(result.array());
         if (result.isEmpty()) {
           const newTask =
             await this.tasksController.handlePostTasks(
@@ -81,6 +84,7 @@ export class TasksRouter {
     this.router.patch(
       '/update',
       upload.single('image'),
+      parseSubtasks,
       updateTaskValidator,
       async (
         req: Request<{}, {}, IPartialTaskWithId>,

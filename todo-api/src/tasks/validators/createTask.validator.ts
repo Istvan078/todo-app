@@ -57,4 +57,9 @@ export const createTaskValidator = checkSchema({
     isBoolean: true,
     default: false,
   },
+  subtasks: {
+    in: ['body'],
+    optional: true,
+    isArray: true,
+  },
 });

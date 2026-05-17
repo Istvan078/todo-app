@@ -78,4 +78,9 @@ export const updateTaskValidator = checkSchema({
     optional: true,
     isISO8601: true,
   },
+  subtasks: {
+    in: ['body'],
+    optional: true,
+    isArray: true,
+  },
 });

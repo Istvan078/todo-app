@@ -86,10 +86,11 @@ export class GetTasksProvider {
     const totalTasksCount = tasks.tasks?.length;
     const completedTasksCount =
       tasks.completedTasks?.length;
-    const todoTasks = tasks.tasks.filter(
-      (t: any) =>
-        t.status !== 'completed' && t.isDaily === false,
-    );
+    const todoTasks = tasks.tasks.filter((t: any) => {
+      return (
+        t.status !== 'completed' && t.isDaily === false
+      );
+    });
     const todoTasksCount = todoTasks?.length;
     const inProgressTasks = tasks.tasks.filter(
       (t: any) => t.status === 'inProgress',

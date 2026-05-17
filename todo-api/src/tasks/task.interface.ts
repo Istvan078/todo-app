@@ -1,9 +1,15 @@
 import { Schema } from 'mongoose';
 
+export type Subtask = {
+  title: string;
+  completed: boolean;
+};
+
 export interface ITask {
   title: string;
   description: string;
   status: 'todo' | 'inProgress' | 'completed';
+  subtasks?: Subtask[];
   priority: 'low' | 'normal' | 'high';
   isDaily: boolean;
   dueDate: Date;

@@ -81,6 +81,9 @@ export class UpdateTaskProvider {
     task.doneTodayAt = update.doneTodayAt
       ? update.doneTodayAt
       : task.doneTodayAt;
+    task.subtasks = update.subtasks
+      ? update.subtasks
+      : task.subtasks;
     return await task.save();
   }
 }
