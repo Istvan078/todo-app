@@ -13,6 +13,7 @@ export const TaskDialog: FC<{
   isDialogOpen: boolean;
   confirmText: string;
   dialogDescription: string;
+  buttonVariant?: "destructive" | "default";
   onConfirm: (isTask: boolean, isImage: boolean) => void;
   onClose: () => void;
 }> = ({
@@ -21,6 +22,7 @@ export const TaskDialog: FC<{
   dialogDescription,
   onConfirm,
   onClose,
+  buttonVariant = "destructive",
 }): JSX.Element => (
   <Dialog open={isDialogOpen} onOpenChange={onClose}>
     <DialogContent>
@@ -36,7 +38,12 @@ export const TaskDialog: FC<{
               confirmText.includes("Image") ? true : false,
             )
           }
-          variant="destructive"
+          variant={buttonVariant}
+          className={`${
+            buttonVariant === "destructive"
+              ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
+              : "bg-green-600 hover:bg-green-700 focus:ring-green-500"
+          }`}
         >
           {confirmText}
         </Button>

@@ -19,6 +19,7 @@ import { useSendPush } from "@/hooks/useSendPush.hook";
 import { useDeleteTaskImage } from "@/hooks/useDeleteTaskImage.hook";
 import { Spinner } from "@/components/ui/spinner";
 import { TaskDialog } from "../dialog/dialog";
+import { TaskDetailsDialog } from "../dialog/taskDetailsDialog";
 
 export const Task: FC<ITask & { onEdit: () => void }> = (
   props: ITask & { onEdit: () => void },
@@ -46,8 +47,11 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
   const queryClient = useQueryClient();
   const [isLoading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
   const [dialogConfirmText, setDialogConfirmText] = useState("");
   const [dialogDescription, setDialogDescription] = useState("");
+  const [buttonVariant, setButtonVariant] = useState<string>("destructive");
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const formattedDate = new Date(dueDate).toLocaleDateString("en-GB", {
     day: "numeric",
@@ -83,6 +87,13 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     });
   }
 
+  function handleConfirmCompleted() {
+    setIsDialogOpen(true);
+    setDialogConfirmText("Complete Task");
+    setDialogDescription(`Mark "${title}" as completed?`);
+    setButtonVariant("default");
+  }
+
   function handleTaskCompleted() {
     setLoading(true);
     if (_id) {
@@ -100,6 +111,8 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           url: window.location.origin,
         });
         setLoading(false);
+        setIsCompleted(false);
+        setIsDialogOpen(false);
       },
     });
   }
@@ -148,12 +161,18 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     setIsDialogOpen(false);
   }
 
+  function onOpenDetails(task: ITask) {
+    console.log("Opening details for task:", task);
+    setIsTaskDetailsDialogOpen(true);
+  }
+
   function openTaskDeleteDialog() {
     setIsDialogOpen(true);
     setDialogConfirmText("Delete Task");
     setDialogDescription(
       `Are you sure you want to delete task "${title}"? This action cannot be undone.`,
     );
+    setButtonVariant("destructive");
   }
 
   function openImageDeleteDialog() {
@@ -162,6 +181,7 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
     setDialogDescription(
       `Are you sure you want to delete the image for task "${title}"? This action cannot be undone.`,
     );
+    setButtonVariant("destructive");
   }
 
   function handleDeleteTaskImage() {
@@ -192,10 +212,17 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
       <TaskDialog
         isDialogOpen={isDialogOpen}
         confirmText={dialogConfirmText}
-        onConfirm={handleConfirmDelete}
+        buttonVariant={buttonVariant}
+        onConfirm={isCompleted ? handleTaskCompleted : handleConfirmDelete}
         onClose={() => setIsDialogOpen(false)}
         dialogDescription={dialogDescription}
       ></TaskDialog>
+      <TaskDetailsDialog
+        task={props}
+        isOpen={isTaskDetailsDialogOpen}
+        onClose={() => setIsTaskDetailsDialogOpen(false)}
+        onEdit={setIsTaskDetailsDialogOpen.bind(null, false) && onEdit}
+      ></TaskDetailsDialog>
       <Card
         className={`${status === "completed" ? "bg-slate-800 gap-3" : ""} w-full mb-8 py-2 sm:pb-4`}
       >
@@ -258,7 +285,17 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
           )}
         </CardHeader>
         <CardContent className="px-3">
-          <p>{description}</p>
+          <div>
+            <p>{description}</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="px-0 text-sky-300 hover:text-sky-200"
+              onClick={() => onOpenDetails(props)}
+            >
+              View details →
+            </Button>
+          </div>
           {imageUrl && (
             <div className="grid grid-cols-4 grid-rows-1">
               <div className="col-start-1 col-end-5 row-start-1 row-end-2 w-full overflow-hidden rounded-md border border-slate-700 bg-slate-900 overflow-y-auto max-h-170">
@@ -302,7 +339,12 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
               </div>
               {!isDaily && (
                 <>
-                  <Button onClick={handleTaskCompleted}>
+                  <Button
+                    onClick={() => {
+                      setIsCompleted(true);
+                      handleConfirmCompleted();
+                    }}
+                  >
                     {!isLoading && "Completed"}
                     {isLoading && <Spinner className="w-6 h-6"></Spinner>}
                   </Button>

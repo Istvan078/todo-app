@@ -9,6 +9,7 @@ export interface ITask {
   imageUrl?: string;
   imagePublicId?: string;
   isDaily: boolean;
+  createdAt?: string;
   updatedAt?: string;
   isDoneToday?: boolean; // for daily tasks to track if they are done today
   doneTodayAt?: string; // to track when the daily task was marked as done
