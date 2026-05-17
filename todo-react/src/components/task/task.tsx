@@ -50,7 +50,9 @@ export const Task: FC<ITask & { onEdit: () => void }> = (
   const [isTaskDetailsDialogOpen, setIsTaskDetailsDialogOpen] = useState(false);
   const [dialogConfirmText, setDialogConfirmText] = useState("");
   const [dialogDescription, setDialogDescription] = useState("");
-  const [buttonVariant, setButtonVariant] = useState<string>("destructive");
+  const [buttonVariant, setButtonVariant] = useState<"destructive" | "default">(
+    "destructive",
+  );
   const [isCompleted, setIsCompleted] = useState(false);
 
   const formattedDate = new Date(dueDate).toLocaleDateString("en-GB", {
