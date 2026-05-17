@@ -31,4 +31,12 @@ export const CreateTaskSchema = z.object({
   }),
   image: z.instanceof(File).optional(),
   isDaily: z.boolean(),
+  subtasks: z
+    .array(
+      z.object({
+        title: z.string().min(1, "Subtask title is required"),
+        completed: z.boolean(),
+      }),
+    )
+    .optional(),
 });

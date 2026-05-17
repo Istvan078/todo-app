@@ -281,6 +281,7 @@ export const Tasks: FC = (): ReactElement => {
                     isOverdue={task.isOverdue}
                     createdAt={task.createdAt}
                     updatedAt={task.updatedAt}
+                    subtasks={task.subtasks}
                   ></Task>
                 ))}
 
@@ -309,6 +310,7 @@ export const Tasks: FC = (): ReactElement => {
                     isDaily={task.isDaily}
                     createdAt={task.createdAt}
                     updatedAt={task.updatedAt}
+                    subtasks={task.subtasks}
                     onEdit={() => openEditTask(task)}
                   ></Task>
                 ))}
@@ -342,6 +344,7 @@ export const Tasks: FC = (): ReactElement => {
                     createdAt={task.createdAt}
                     updatedAt={task.updatedAt}
                     imageUrl={task.imageUrl}
+                    subtasks={task.subtasks}
                     onEdit={() => openEditTask(task)}
                   ></Task>
                 ))}

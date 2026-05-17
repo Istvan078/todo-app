@@ -1,3 +1,8 @@
+export type Subtask = {
+  title: string;
+  completed: boolean;
+};
+
 export interface ITask {
   _id?: string;
   title: string;
@@ -5,6 +10,7 @@ export interface ITask {
   status: "todo" | "inProgress" | "completed";
   priority: "low" | "normal" | "high";
   dueDate: string;
+  subtasks?: Subtask[];
   file?: File;
   imageUrl?: string;
   imagePublicId?: string;

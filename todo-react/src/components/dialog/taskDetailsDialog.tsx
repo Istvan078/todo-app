@@ -16,8 +16,10 @@ import {
   ImageIcon,
   Pencil,
   CircleDot,
+  GripVertical,
 } from "lucide-react";
 import type { ITask } from "@/types/task.interface";
+import { Checkbox } from "../ui/checkbox";
 
 type TaskDetailsDialogProps = {
   task: ITask | null;
@@ -104,6 +106,41 @@ export const TaskDetailsDialog: FC<TaskDetailsDialogProps> = ({
             <p className="whitespace-pre-line leading-7 text-slate-200">
               {task.description}
             </p>
+          </section>
+
+          <section className="space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+              Subtasks
+            </p>
+
+            {task.subtasks && task.subtasks.length > 0 ? (
+              <div className="space-y-2">
+                {task.subtasks.map((subtask, index) => (
+                  <div
+                    key={`${subtask.title}-${index}`}
+                    className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3"
+                  >
+                    <GripVertical
+                      size={18}
+                      className="text-slate-500 cursor-grab"
+                    />
+                    <Checkbox checked={subtask.completed} disabled />
+
+                    <span
+                      className={
+                        subtask.completed
+                          ? "text-slate-500 line-through"
+                          : "text-slate-200"
+                      }
+                    >
+                      {subtask.title}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-slate-500">No subtasks added.</p>
+            )}
           </section>
 
           <section className="space-y-3">

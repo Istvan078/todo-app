@@ -15,7 +15,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { CalendarIcon, ChevronDownIcon, Paperclip } from "lucide-react";
+import {
+  CalendarIcon,
+  ChevronDownIcon,
+  GripVertical,
+  Paperclip,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CreateTaskSchema } from "@/schemas/createTask.schema";
@@ -38,6 +45,7 @@ import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 import { useSendPush } from "@/hooks/useSendPush.hook";
 import { Switch } from "../ui/switch";
 import { Spinner } from "../ui/spinner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const defaultFormValues: Partial<z.infer<typeof CreateTaskSchema>> = {
   title: "",
@@ -47,6 +55,7 @@ const defaultFormValues: Partial<z.infer<typeof CreateTaskSchema>> = {
   dueDate: undefined,
   isDaily: false,
   image: undefined,
+  subtasks: [],
 };
 export const CreateTaskForm = ({
   onCreated,
@@ -79,6 +88,10 @@ export const CreateTaskForm = ({
     formData.append("priority", values.priority);
     formData.append("dueDate", values.dueDate.toISOString());
     formData.append("isDaily", String(values.isDaily));
+    formData.append(
+      "subtasks",
+      values.subtasks ? JSON.stringify(values.subtasks) : "[]",
+    );
     if (values.isDaily) {
       formData.append("isDoneToday", "false");
     }
@@ -126,6 +139,7 @@ export const CreateTaskForm = ({
 
   useEffect(() => {
     if (editTaskData) {
+      console.log("Populating form with edit data:", editTaskData);
       form.reset({
         title: editTaskData.title,
         description: editTaskData.description,
@@ -133,6 +147,7 @@ export const CreateTaskForm = ({
         priority: editTaskData.priority,
         status: editTaskData.status,
         isDaily: editTaskData.isDaily,
+        subtasks: editTaskData.subtasks ?? [],
       });
     }
   }, [editTaskData, form]);
@@ -335,6 +350,121 @@ export const CreateTaskForm = ({
                   <FormMessage></FormMessage>
                 </FormItem>
               )}
+            ></FormField>
+          </div>
+          <div className="py-2">
+            <FormField
+              control={form.control}
+              name="subtasks"
+              render={({ field }) => {
+                const subtasks = field.value || [];
+                const addSubtask = () => {
+                  field.onChange([
+                    ...subtasks,
+                    {
+                      title: "",
+                      completed: false,
+                    },
+                  ]);
+                };
+                const updateSubtaskTitle = (index: number, title: string) => {
+                  field.onChange(
+                    subtasks.map((subtask, subtaskIndex) =>
+                      subtaskIndex === index
+                        ? {
+                            ...subtask,
+                            title,
+                          }
+                        : subtask,
+                    ),
+                  );
+                };
+                const updateSubtaskCompleted = (
+                  index: number,
+                  completed: boolean,
+                ) => {
+                  field.onChange(
+                    subtasks.map((subtask, subtaskIndex) =>
+                      subtaskIndex === index
+                        ? {
+                            ...subtask,
+                            completed,
+                          }
+                        : subtask,
+                    ),
+                  );
+                };
+                const removeSubtask = (index: number) => {
+                  field.onChange(
+                    subtasks.filter(
+                      (_, subtaskIndex) => subtaskIndex !== index,
+                    ),
+                  );
+                };
+                return (
+                  <FormItem>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-400">
+                        Subtasks
+                      </h3>
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addSubtask}
+                        className="border-slate-700 bg-slate-900 text-white hover:bg-slate-800"
+                      >
+                        <Plus size={16} className="mr-2" />
+                        Add subtask
+                      </Button>
+                    </div>
+                    {field.value?.length === 0 && (
+                      <p className="text-sm text-slate-500">No subtasks yet.</p>
+                    )}
+
+                    <div className="space-y-2">
+                      {field.value?.map((subtask, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3"
+                        >
+                          <GripVertical
+                            size={26}
+                            className="text-slate-500 cursor-grab"
+                          />
+                          <FormControl>
+                            <Checkbox
+                              checked={subtask?.completed ?? false}
+                              onCheckedChange={(checked) => {
+                                updateSubtaskCompleted(index, Boolean(checked));
+                              }}
+                            />
+                          </FormControl>
+                          <Input
+                            value={subtask?.title ?? ""}
+                            placeholder="Subtask title..."
+                            className="border-slate-700 bg-slate-950 text-white"
+                            onChange={(e) =>
+                              updateSubtaskTitle(index, e.target.value)
+                            }
+                          />
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeSubtask(index)}
+                            className="text-red-400 hover:bg-red-950 hover:text-red-300"
+                          >
+                            <Trash2 size={18} />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </FormItem>
+                );
+              }}
             ></FormField>
           </div>
           <div className="py-2 flex justify-between">
