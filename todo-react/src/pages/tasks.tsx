@@ -361,7 +361,7 @@ export const Tasks: FC = (): ReactElement => {
                 }}
                 editTaskData={editTaskData}
                 isDesktop={isDesktop}
-                user={data.meta.user}
+                user={data.meta?.user}
                 onFormSubmit={handleTaskFormFinished}
               ></TaskSidebar>
             )}

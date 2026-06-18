@@ -67,7 +67,7 @@ export class GetTasksProvider {
   }> {
     const tasks: any =
       await this.tasksService.findAllTasksByUserId(userId, {
-        limit: pagination.limit ?? 10,
+        limit: pagination.limit ?? 20,
         page: pagination.page ?? 1,
         order: pagination.order ?? 'dsc',
       });
